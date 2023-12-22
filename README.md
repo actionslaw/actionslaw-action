@@ -11,16 +11,18 @@ name: Actionslaw
 on:
   schedule:
     - cron: "*/15 * * * *"
+  push:
+    branches:
+      - main
 
 jobs:
   actionslaw:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/actionslaw@v0.1
-          on:
-            rss:
-              url: https://hnrss.org/newest?points=300&count=3
+      - uses: actionslaw/actionslaw-action@v0.1
+        with:
+          on: '{ "rss": { "url": "https://hnrss.org/newest?points=300&count=3" } }'
 
-jobs:
   print:
     needs: actionslaw
     strategy:
@@ -38,5 +40,5 @@ jobs:
           echo title: $title
           echo contentSnippet: $contentSnippet
           echo link: $link
-```
 
+```

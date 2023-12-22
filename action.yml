@@ -7,17 +7,3 @@ inputs:
   on:
     description: Configuration for Actionslaw trigger
     required: true
-outputs:
-  items:
-    description: Array of workflow items to process
-    value: ${{ steps.actionslaw.outputs.items }}
-runs:
-  using: composite
-  steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v3
-    - run: npm ci
-      shell: bash
-    - id: actionslaw
-      run: npm run start
-      shell: bash
