@@ -7,3 +7,6 @@ inputs:
   on:
     description: Configuration for Actionslaw trigger
     required: true
+runs:
+  using: node20
+  main: dist/main.js
