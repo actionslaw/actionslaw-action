@@ -2,7 +2,9 @@
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
     "preserveConstEnums": true,
-    "outDir": "dist/"
+    "outDir": "lib/"
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*"
+  ],
 }
