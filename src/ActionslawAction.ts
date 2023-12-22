@@ -1,36 +1,27 @@
-import * as core from '@actions/core'
-
-type Item = any | { readonly key: string }
-
-type Config = Map<string, [string, string][]>
+import * as core from "@actions/core";
+import { Item } from "./triggers/Trigger";
+import { Triggers } from "./triggers/Triggers";
 
 export class ActionslawAction {
-
   async run(): Promise<void> {
-    const config =
-      new Map(
-        Object.entries(
-          JSON.parse(
-            core.getInput('on', { required: true })
-          )
-        )
-      ) as Config
+    const config = Object.entries<[string, string][]>(
+      JSON.parse(core.getInput("on", { required: true })),
+    );
 
-    core.info(`🔫 running actionslaw [${Array.from(config.keys())}] triggers`)
+    const triggerKeys = config.map((entry) => entry[0]);
+    core.info(`🔫 running actionslaw [${triggerKeys}] triggers`);
 
-    const items: Item[] =
-      [
-        {
-          key: "key",
-          title: "test-title",
-          contentSnippet: "snippet",
-          link: "https://example.org"
-        }
-      ]
+    const triggers = config.map((entry) => {
+      const [triggerKey, triggerConfig] = entry;
+      return Triggers.for(triggerKey)!(triggerConfig);
+    });
 
-    console.debug(`🔫 triggering [${items.map(item => item.key)}]`)
+    const items: Item[][] = await Promise.all(
+      triggers.map(async (trigger) => await trigger.run()),
+    );
 
-    core.setOutput('items', JSON.stringify(items))
+    console.debug(`🔫 triggering [${items.flat().map((item) => item.key)}]`);
+
+    core.setOutput("items", JSON.stringify(items.flat()));
   }
-
 }
