@@ -1,5 +1,8 @@
 name: Actionslaw Trigger Action
 description: Action to trigger Actionslaw workflows
+branding:
+  icon: settings
+  color: white
 inputs:
   on:
     description: Configuration for Actionslaw trigger
