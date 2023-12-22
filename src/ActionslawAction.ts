@@ -30,7 +30,7 @@ export class ActionslawAction {
 
     console.debug(`🔫 triggering [${items.map(item => item.key)}]`)
 
-    core.setOutput('items', items)
+    core.setOutput('items', JSON.stringify(items))
   }
 
 }

@@ -18906,7 +18906,7 @@ var require_ActionslawAction = __commonJS({
           }
         ];
         console.debug(`\u{1F52B} triggering [${items.map((item) => item.key)}]`);
-        core.setOutput("items", items);
+        core.setOutput("items", JSON.stringify(items));
       }
     };
     exports2.ActionslawAction = ActionslawAction;
