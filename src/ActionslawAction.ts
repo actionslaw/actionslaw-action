@@ -21,14 +21,21 @@ export class ActionslawAction {
     const items: Item[][] = await Promise.all(
       triggers.map(async (trigger) => await trigger.run()),
     );
+    const allItems = items.flat();
 
-    const keys: Key[] = items.flat().map((item) => item.key);
+    const keys: Key[] = allItems.map((item) => item.key);
 
     console.debug(`🔫 found [${keys}] triggers`);
 
-    const uncached: Item[] = items
-      .flat()
-      .filter(async (item) => await !TriggerCache.isCached(item.key));
+    const cacheChecks: boolean[] = await Promise.all(
+      allItems.map((item) => TriggerCache.isCached(item.key)),
+    );
+
+    const uncached: Item[] =
+      cacheChecks
+        .map<[boolean, Item]>((check, i) => [check, allItems[i]])
+        .filter(([cached, _]) => !cached)
+        .map<Item>(([_, item]) => item)
 
     console.debug(`🔫 triggering [${uncached.flat().map((item) => item.key)}]`);
 

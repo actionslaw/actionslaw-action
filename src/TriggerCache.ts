@@ -7,10 +7,9 @@ export class TriggerCache {
 
   static async isCached(key: Key): Promise<boolean> {
     const cacheId = await cache.restoreCache([TriggerCache.file], key);
-    console.debug(
-      `🗺️  Checking trigger cache [${key}:${TriggerCache.file}]=${cacheId}`,
-    );
-    return cacheId !== undefined;
+    const cached = cacheId !== undefined
+    console.debug(`🗺️  Check trigger cache [${key}:${TriggerCache.file}]=${cached}`);
+    return cached;
   }
 
   static async save(tocache: Key[]): Promise<void> {

@@ -85471,8 +85471,9 @@ var require_TriggerCache = __commonJS({
       static file = "./actionslaw.cache.json";
       static async isCached(key) {
         const cacheId = await cache.restoreCache([_TriggerCache.file], key);
-        console.debug(`\u{1F5FA}\uFE0F  Checking trigger cache [${key}:${_TriggerCache.file}]=${cacheId}`);
-        return cacheId !== void 0;
+        const cached = cacheId !== void 0;
+        console.debug(`\u{1F5FA}\uFE0F  Check trigger cache [${key}:${_TriggerCache.file}]=${cached}`);
+        return cached;
       }
       static async save(tocache) {
         tocache.forEach(async (key) => {
@@ -85537,9 +85538,11 @@ var require_ActionslawAction = __commonJS({
           return Triggers_1.Triggers.for(triggerKey)(triggerConfig);
         });
         const items = await Promise.all(triggers.map(async (trigger) => await trigger.run()));
-        const keys = items.flat().map((item) => item.key);
+        const allItems = items.flat();
+        const keys = allItems.map((item) => item.key);
         console.debug(`\u{1F52B} found [${keys}] triggers`);
-        const uncached = items.flat().filter(async (item) => await !TriggerCache_1.TriggerCache.isCached(item.key));
+        const cacheChecks = await Promise.all(allItems.map((item) => TriggerCache_1.TriggerCache.isCached(item.key)));
+        const uncached = cacheChecks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item);
         console.debug(`\u{1F52B} triggering [${uncached.flat().map((item) => item.key)}]`);
         core.setOutput("items", JSON.stringify(uncached.flat()));
         await TriggerCache_1.TriggerCache.save(uncached.map((item) => item.key));
