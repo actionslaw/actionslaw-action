@@ -1,3 +1,4 @@
+import { MockTrigger } from "./MockTrigger";
 import { RssTrigger } from "./RssTrigger";
 import { Trigger } from "./Trigger";
 
@@ -10,8 +11,10 @@ export abstract class Triggers {
     switch (key) {
       case "rss":
         return (config: [string, string][]) => new RssTrigger(config);
+      case "mock":
+        return (config: [string, string][]) => new MockTrigger(config);
       default:
-        throw new Error(`No trigger found for key ${key}`)
+        throw new Error(`No trigger found for key ${key}`);
     }
   }
 }

@@ -18866,6 +18866,31 @@ var require_Trigger = __commonJS({
   }
 });
 
+// lib/triggers/MockTrigger.js
+var require_MockTrigger = __commonJS({
+  "lib/triggers/MockTrigger.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.MockTrigger = void 0;
+    var Trigger_1 = require_Trigger();
+    var MockTrigger = class extends Trigger_1.Trigger {
+      config;
+      constructor(config) {
+        super();
+        this.config = config;
+      }
+      async run() {
+        const repititions = this.config.repititions ? this.config.repititions : 1;
+        if (this.config.payload) {
+          return new Array(repititions).fill(this.config.payload);
+        } else
+          return [];
+      }
+    };
+    exports2.MockTrigger = MockTrigger;
+  }
+});
+
 // node_modules/xml2js/lib/defaults.js
 var require_defaults = __commonJS({
   "node_modules/xml2js/lib/defaults.js"(exports2) {
@@ -25646,12 +25671,15 @@ var require_Triggers = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Triggers = void 0;
+    var MockTrigger_1 = require_MockTrigger();
     var RssTrigger_1 = require_RssTrigger();
     var Triggers = class {
       static for(key) {
         switch (key) {
           case "rss":
             return (config) => new RssTrigger_1.RssTrigger(config);
+          case "mock":
+            return (config) => new MockTrigger_1.MockTrigger(config);
           default:
             throw new Error(`No trigger found for key ${key}`);
         }
