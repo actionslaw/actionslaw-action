@@ -1,5 +1,7 @@
+export type Key = string & { readonly "": unique symbol };
+
 export interface Item {
-  readonly key: string;
+  readonly key: Key;
 }
 
 export abstract class Trigger {

@@ -10,11 +10,15 @@
     "pack": "esbuild lib/main.js --outfile=dist/main.js  --bundle --platform=node --target=node20"
   },
   "devDependencies": {
+    "@actions/cache": "^3.2.2",
     "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
     "@tsconfig/node20": "^20.1.2",
+    "@types/fs-extra": "^11.0.4",
     "@types/html-to-text": "^9.0.4",
     "@types/node": "^20.10.5",
     "esbuild": "^0.19.10",
+    "fs-extra": "^11.2.0",
     "html-to-text": "^9.0.5",
     "resolve-cwd": "^3.0.0",
     "typed-rest-client": "^1.8.11"

@@ -1,15 +1,15 @@
-import { Item } from "../Trigger";
+import { Item, Key } from "../Trigger";
 
 export class Post implements Item {
-  uri: string;
+  uri: Key;
   message: string;
 
   constructor(uri: string, message: string) {
-    this.uri = uri;
+    this.uri = uri as Key;
     this.message = message;
   }
 
-  get key() {
+  get key(): Key {
     return this.uri;
   }
 }

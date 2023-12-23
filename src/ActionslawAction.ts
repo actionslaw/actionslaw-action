@@ -1,6 +1,7 @@
 import * as core from "@actions/core";
-import { Item } from "./triggers/Trigger";
+import { Key, Item } from "./triggers/Trigger";
 import { Triggers } from "./triggers/Triggers";
+import { TriggerCache } from "./TriggerCache";
 
 export class ActionslawAction {
   async run(): Promise<void> {
@@ -20,8 +21,19 @@ export class ActionslawAction {
       triggers.map(async (trigger) => await trigger.run()),
     );
 
-    console.debug(`🔫 triggering [${items.flat().map((item) => item.key)}]`);
+    const keys: Key[] = items.flat().map((item) => item.key);
+    const cached: Key[] = await TriggerCache.load();
 
-    core.setOutput("items", JSON.stringify(items.flat()));
+    console.debug(`🔫 found [${keys}] triggers`);
+
+    const uncached: Item[] = items
+      .flat()
+      .filter((x) => !cached.includes(x.key));
+
+    console.debug(`🔫 triggering [${uncached.flat().map((item) => item.key)}]`);
+
+    core.setOutput("items", JSON.stringify(uncached.flat()));
+
+    await TriggerCache.save(cached.concat(uncached.map((item) => item.key)));
   }
 }

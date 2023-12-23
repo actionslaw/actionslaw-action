@@ -1,15 +1,19 @@
-import { Item, Trigger } from "./Trigger";
+import { Item, Key, Trigger } from "./Trigger";
 import Parser from "rss-parser";
+import { createHash } from "crypto";
 
 interface RssConfig {
   readonly url?: string;
 }
 
 class RssItem implements Item, Parser.Item {
-  get key(): string {
-    if (this.guid) return this.guid;
-    else if (this.link) return this.link;
-    else return "digest";
+  get key(): Key {
+    if (this.guid) return this.guid as Key;
+    else if (this.link) return this.link as Key;
+    else
+      return createHash("sha1")
+        .update(JSON.stringify(this))
+        .digest("hex") as Key;
   }
 
   readonly link?: string;
