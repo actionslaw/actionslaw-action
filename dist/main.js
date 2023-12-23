@@ -85470,8 +85470,9 @@ var require_TriggerCache = __commonJS({
     var TriggerCache = class _TriggerCache {
       static file = "./actionslaw.cache.json";
       static async isCached(key) {
-        console.debug(`\u{1F5FA}\uFE0F  Checking trigger cache [${key}:${_TriggerCache.file}]`);
-        return await cache.restoreCache([_TriggerCache.file], key) !== void 0;
+        const cacheId = await cache.restoreCache([_TriggerCache.file], key);
+        console.debug(`\u{1F5FA}\uFE0F  Checking trigger cache [${key}:${_TriggerCache.file}]=${cacheId}`);
+        return cacheId !== void 0;
       }
       static async save(tocache) {
         tocache.forEach(async (key) => {

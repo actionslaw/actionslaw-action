@@ -6,8 +6,11 @@ export class TriggerCache {
   private static readonly file: string = "./actionslaw.cache.json";
 
   static async isCached(key: Key): Promise<boolean> {
-    console.debug(`🗺️  Checking trigger cache [${key}:${TriggerCache.file}]`);
-    return await cache.restoreCache([TriggerCache.file], key) !== undefined;
+    const cacheId = await cache.restoreCache([TriggerCache.file], key);
+    console.debug(
+      `🗺️  Checking trigger cache [${key}:${TriggerCache.file}]=${cacheId}`,
+    );
+    return cacheId !== undefined;
   }
 
   static async save(tocache: Key[]): Promise<void> {
