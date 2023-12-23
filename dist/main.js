@@ -25604,36 +25604,21 @@ var require_RssTrigger = __commonJS({
     var Trigger_1 = require_Trigger();
     var rss_parser_1 = __importDefault(require_rss_parser());
     var RssItem = class {
-      key;
+      get key() {
+        return this.link ? this.link : "";
+      }
       link;
-      guid;
-      title;
-      pubDate;
-      creator;
-      summary;
-      content;
-      isoDate;
-      categories;
-      contentSnippet;
-      enclosure;
+      // readonly guid?: string;
+      // readonly title?: string;
+      // readonly pubDate?: string;
+      // readonly creator?: string;
+      // readonly summary?: string;
+      // readonly isoDate?: string;
+      // readonly categories?: string[];
+      // readonly contentSnippet?: string;
+      // readonly enclosure?: Parser.Enclosure;
       constructor(item) {
-        if (item.guid)
-          this.key = item.guid;
-        else if (item.link)
-          this.key = item.link;
-        else
-          this.key = "digest";
         this.link = item.link;
-        this.guid = item.guid;
-        this.title = item.title;
-        this.pubDate = item.pubDate;
-        this.creator = item.creator;
-        this.summary = item.summary;
-        this.content = item.content;
-        this.isoDate = item.isoDate;
-        this.categories = item.categories;
-        this.contentSnippet = item.contentSnippet;
-        this.enclosure = item.enclosure;
       }
     };
     var RssTrigger = class extends Trigger_1.Trigger {

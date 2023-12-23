@@ -6,36 +6,37 @@ interface RssConfig {
 }
 
 class RssItem implements Item, Parser.Item {
-  readonly key: string;
+  get key(): string {
+    return this.link ? this.link : "";
+  }
+
   readonly link?: string;
-  readonly guid?: string;
-  readonly title?: string;
-  readonly pubDate?: string;
-  readonly creator?: string;
-  readonly summary?: string;
-  readonly content?: string;
-  readonly isoDate?: string;
-  readonly categories?: string[];
-  readonly contentSnippet?: string;
-  readonly enclosure?: Parser.Enclosure;
+  // readonly guid?: string;
+  // readonly title?: string;
+  // readonly pubDate?: string;
+  // readonly creator?: string;
+  // readonly summary?: string;
+  // readonly isoDate?: string;
+  // readonly categories?: string[];
+  // readonly contentSnippet?: string;
+  // readonly enclosure?: Parser.Enclosure;
 
   constructor(item: Parser.Item) {
-    if (item.guid) this.key = item.guid;
-    else if (item.link) this.key = item.link;
-    else this.key = "digest";
+    // if (item.guid) this.key = item.guid;
+    // else if (item.link) this.key = item.link;
+    // else this.key = "digest";
     // this.key = this.helpers.createContentDigest(item);
 
     this.link = item.link;
-    this.guid = item.guid;
-    this.title = item.title;
-    this.pubDate = item.pubDate;
-    this.creator = item.creator;
-    this.summary = item.summary;
-    this.content = item.content;
-    this.isoDate = item.isoDate;
-    this.categories = item.categories;
-    this.contentSnippet = item.contentSnippet;
-    this.enclosure = item.enclosure;
+    // this.guid = item.guid;
+    // this.title = item.title;
+    // this.pubDate = item.pubDate;
+    // this.creator = item.creator;
+    // this.summary = item.summary;
+    // this.isoDate = item.isoDate;
+    // this.categories = item.categories;
+    // this.contentSnippet = item.contentSnippet;
+    // this.enclosure = item.enclosure;
   }
 }
 
