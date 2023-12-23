@@ -22,18 +22,17 @@ export class ActionslawAction {
     );
 
     const keys: Key[] = items.flat().map((item) => item.key);
-    const cached: Key[] = await TriggerCache.load();
 
     console.debug(`🔫 found [${keys}] triggers`);
 
     const uncached: Item[] = items
       .flat()
-      .filter((x) => !cached.includes(x.key));
+      .filter(async (item) => await !TriggerCache.isCached(item.key));
 
     console.debug(`🔫 triggering [${uncached.flat().map((item) => item.key)}]`);
 
     core.setOutput("items", JSON.stringify(uncached.flat()));
 
-    await TriggerCache.save(cached.concat(uncached.map((item) => item.key)));
+    await TriggerCache.save(uncached.map((item) => item.key));
   }
 }
