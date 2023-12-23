@@ -17,7 +17,6 @@
     "@types/html-to-text": "^9.0.4",
     "@types/node": "^20.10.5",
     "esbuild": "^0.19.10",
-    "fs-extra": "^11.2.0",
     "html-to-text": "^9.0.5",
     "resolve-cwd": "^3.0.0",
     "typed-rest-client": "^1.8.11"
