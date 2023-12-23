@@ -1,16 +1,16 @@
 import * as core from "@actions/core";
 import { Key, Item } from "./triggers/Trigger";
-import { Triggers } from "./triggers/Triggers";
+import { TriggerKey, Triggers } from "./triggers/Triggers";
 import { TriggerCache } from "./TriggerCache";
 import { Config } from "./Config";
 
 export class ActionslawAction {
   async run(): Promise<void> {
-    const config = Object.entries<Config>(
+    const config: [TriggerKey, Config][] = Object.entries<Config>(
       JSON.parse(core.getInput("on", { required: true })),
-    );
+    ) as [TriggerKey, Config][];
 
-    const triggerKeys = config.map((entry) => entry[0]);
+    const triggerKeys: TriggerKey[] = config.map((entry) => entry[0]);
     core.info(`🔫 running actionslaw [${triggerKeys}] triggers`);
 
     const triggers = config.map((entry) => {

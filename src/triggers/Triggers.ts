@@ -4,7 +4,7 @@ import { Trigger } from "./Trigger";
 import { ActivityPubTrigger } from "./activitypub/ActivityPubTrigger";
 import { Config } from "../Config";
 
-export type TriggerKey = string;
+export type TriggerKey = string & { readonly "": unique symbol };
 
 type TriggerFactory = (config: Config) => Trigger;
 
