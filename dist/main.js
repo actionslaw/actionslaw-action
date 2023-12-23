@@ -91681,7 +91681,7 @@ var require_TriggerCache = __commonJS({
     var fsExtra = __importStar2(require_lib13());
     var TriggerCache = class _TriggerCache {
       static key = github.context.workflow ? github.context.workflow : "test-key";
-      static file = "./actionslaw.cache.json";
+      static file = "actionslaw.cache.json";
       static async load() {
         console.debug(`\u{1F5FA}\uFE0F Loading trigger cache [${_TriggerCache.key}:${_TriggerCache.file}]`);
         const exists = await fsExtra.pathExists(_TriggerCache.file);

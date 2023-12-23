@@ -8,7 +8,8 @@ export class TriggerCache {
   static readonly key: string = github.context.workflow
     ? github.context.workflow
     : "test-key";
-  static readonly file: string = "./actionslaw.cache.json";
+
+  static readonly file: string = "actionslaw.cache.json";
 
   static async load(): Promise<Key[]> {
     console.debug(
