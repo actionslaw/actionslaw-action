@@ -1,6 +1,6 @@
 {
   "name": "actionslow-action",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Action to trigger Actionslaw workflows",
   "main": "dist/main.js",
   "author": "Ric Wood <ric@grislyeye.com>",
@@ -12,9 +12,12 @@
   "devDependencies": {
     "@actions/core": "^1.10.1",
     "@tsconfig/node20": "^20.1.2",
+    "@types/html-to-text": "^9.0.4",
     "@types/node": "^20.10.5",
     "esbuild": "^0.19.10",
-    "resolve-cwd": "^3.0.0"
+    "html-to-text": "^9.0.5",
+    "resolve-cwd": "^3.0.0",
+    "typed-rest-client": "^1.8.11"
   },
   "dependencies": {
     "rss-parser": "^3.13.0"
