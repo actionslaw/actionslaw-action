@@ -2,10 +2,11 @@ import * as core from "@actions/core";
 import { Key, Item } from "./triggers/Trigger";
 import { Triggers } from "./triggers/Triggers";
 import { TriggerCache } from "./TriggerCache";
+import { Config } from "./Config";
 
 export class ActionslawAction {
   async run(): Promise<void> {
-    const config = Object.entries<[string, string][]>(
+    const config = Object.entries<Config>(
       JSON.parse(core.getInput("on", { required: true })),
     );
 

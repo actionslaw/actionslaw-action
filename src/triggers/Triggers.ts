@@ -2,20 +2,21 @@ import { MockTrigger } from "./MockTrigger";
 import { RssTrigger } from "./RssTrigger";
 import { Trigger } from "./Trigger";
 import { ActivityPubTrigger } from "./activitypub/ActivityPubTrigger";
+import { Config } from "../Config";
 
 export type TriggerKey = string;
 
-type TriggerFactory = (config: [string, string][]) => Trigger;
+type TriggerFactory = (config: Config) => Trigger;
 
 export abstract class Triggers {
-  static for(key: TriggerKey): TriggerFactory | undefined {
+  static for(key: TriggerKey): TriggerFactory {
     switch (key) {
       case "activitypub":
-        return (config: [string, string][]) => new ActivityPubTrigger(config);
+        return (config: Config) => new ActivityPubTrigger(config);
       case "rss":
-        return (config: [string, string][]) => new RssTrigger(config);
+        return (config: Config) => new RssTrigger(config);
       case "mock":
-        return (config: [string, string][]) => new MockTrigger(config);
+        return (config: Config) => new MockTrigger(config);
       default:
         throw new Error(`No trigger found for key ${key}`);
     }

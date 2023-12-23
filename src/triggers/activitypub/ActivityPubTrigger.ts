@@ -1,4 +1,5 @@
 import { Item, Trigger } from "../Trigger";
+import { Config } from "../../Config";
 import { Post } from "./Post";
 import { ActivityPub } from "./ActivityPub";
 import { WebFinger } from "./WebFinger";
@@ -15,7 +16,7 @@ const cutoffPeriod: Minutes = 30;
 export class ActivityPubTrigger implements Trigger {
   private readonly config: ActivityPubConfig;
 
-  constructor(config: [string, string][]) {
+  constructor(config: Config) {
     this.config = config as ActivityPubConfig;
   }
 
