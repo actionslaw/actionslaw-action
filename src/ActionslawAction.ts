@@ -6,11 +6,11 @@ import { Config } from "./Config";
 
 export class ActionslawAction {
   async run(): Promise<void> {
-    const config: [TriggerKey, Config][] = Object.entries<Config>(
+    const config = Object.entries<Config>(
       JSON.parse(core.getInput("on", { required: true })),
     ) as [TriggerKey, Config][];
 
-    const triggerKeys: TriggerKey[] = config.map((entry) => entry[0]);
+    const triggerKeys = config.map((entry) => entry[0]);
     core.info(`🔫 running actionslaw [${triggerKeys}] triggers`);
 
     const triggers = config.map((entry) => {
