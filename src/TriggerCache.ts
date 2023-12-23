@@ -4,7 +4,7 @@ import * as fs from "fs";
 import * as fsExtra from "fs-extra";
 
 export class TriggerCache {
-  private static readonly file: string = "actionslaw.cache.json";
+  private static readonly file: string = "./actionslaw.cache.json";
 
   static async isCached(key: Key): Promise<boolean> {
     console.debug(`🗺️  Checking trigger cache [${key}:${TriggerCache.file}]`);

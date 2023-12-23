@@ -87668,7 +87668,7 @@ var require_TriggerCache = __commonJS({
     var fs = __importStar2(require("fs"));
     var fsExtra = __importStar2(require_lib13());
     var TriggerCache = class _TriggerCache {
-      static file = "actionslaw.cache.json";
+      static file = "./actionslaw.cache.json";
       static async isCached(key) {
         console.debug(`\u{1F5FA}\uFE0F  Checking trigger cache [${key}:${_TriggerCache.file}]`);
         await cache.restoreCache([_TriggerCache.file], key);
