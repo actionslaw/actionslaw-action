@@ -25,7 +25,7 @@ export class ActionslawAction {
 
     const keys: Key[] = allItems.map((item) => item.key);
 
-    console.debug(`🔫 found [${keys}] triggers`);
+    core.debug(`🔫 found [${keys}] triggers`);
 
     const cacheChecks: boolean[] = await Promise.all(
       allItems.map((item) => TriggerCache.isCached(item.key)),
@@ -36,7 +36,7 @@ export class ActionslawAction {
       .filter(([cached, _]) => !cached)
       .map<Item>(([_, item]) => item);
 
-    console.debug(`🔫 triggering [${uncached.flat().map((item) => item.key)}]`);
+    core.debug(`🔫 triggering [${uncached.flat().map((item) => item.key)}]`);
 
     core.setOutput("items", JSON.stringify(uncached.flat()));
 

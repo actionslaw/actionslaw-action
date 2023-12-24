@@ -14,7 +14,6 @@ interface Outbox {
 
 export function fromJson(json: string): Activity[] {
   const outbox: Outbox = JSON.parse(json);
-  console.log;
   return outbox.orderedItems.map((item) => {
     return {
       id: item.id,

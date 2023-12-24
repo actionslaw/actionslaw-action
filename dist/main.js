@@ -25709,7 +25709,6 @@ var require_Outbox = __commonJS({
     exports2.fromJson = void 0;
     function fromJson(json) {
       const outbox = JSON.parse(json);
-      console.log;
       return outbox.orderedItems.map((item) => {
         return {
           id: item.id,
@@ -85465,6 +85464,7 @@ var require_TriggerCache = __commonJS({
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.TriggerCache = void 0;
+    var core = __importStar2(require_core());
     var cache = __importStar2(require_cache2());
     var fs = __importStar2(require("fs"));
     var TriggerCache = class _TriggerCache {
@@ -85472,12 +85472,12 @@ var require_TriggerCache = __commonJS({
       static async isCached(key) {
         const cacheId = await cache.restoreCache([_TriggerCache.file], key);
         const cached = cacheId !== void 0;
-        console.debug(`\u{1F5FA}\uFE0F  Check trigger cache [${key}:${_TriggerCache.file}]=${cached}`);
+        core.debug(`\u{1F5FA}\uFE0F  Checked cache [${key}:${_TriggerCache.file}]=${cached}`);
         return cached;
       }
       static async save(tocache) {
         tocache.forEach(async (key) => {
-          console.debug(`\u{1F5FA}\uFE0F  Cache trigger [${key}:${_TriggerCache.file}]`);
+          core.debug(`\u{1F5FA}\uFE0F  Cache trigger [${key}:${_TriggerCache.file}]`);
           await fs.promises.writeFile(_TriggerCache.file, key);
           await cache.saveCache([_TriggerCache.file], key);
         });
@@ -85540,10 +85540,10 @@ var require_ActionslawAction = __commonJS({
         const items = await Promise.all(triggers.map(async (trigger) => await trigger.run()));
         const allItems = items.flat();
         const keys = allItems.map((item) => item.key);
-        console.debug(`\u{1F52B} found [${keys}] triggers`);
+        core.debug(`\u{1F52B} found [${keys}] triggers`);
         const cacheChecks = await Promise.all(allItems.map((item) => TriggerCache_1.TriggerCache.isCached(item.key)));
         const uncached = cacheChecks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item);
-        console.debug(`\u{1F52B} triggering [${uncached.flat().map((item) => item.key)}]`);
+        core.debug(`\u{1F52B} triggering [${uncached.flat().map((item) => item.key)}]`);
         core.setOutput("items", JSON.stringify(uncached.flat()));
         await TriggerCache_1.TriggerCache.save(uncached.map((item) => item.key));
       }
