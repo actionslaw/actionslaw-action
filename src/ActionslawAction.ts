@@ -2,13 +2,13 @@ import * as core from "@actions/core";
 import { Key, Item } from "./triggers/Trigger";
 import { TriggerKey, Triggers } from "./triggers/Triggers";
 import { TriggerCache } from "./TriggerCache";
-import { Config } from "./Config";
+import { TriggerConfig } from "./triggers/TriggerConfig";
 
 export class ActionslawAction {
   async run(): Promise<void> {
-    const config = Object.entries<Config>(
+    const config = Object.entries<TriggerConfig>(
       JSON.parse(core.getInput("on", { required: true })),
-    ) as [TriggerKey, Config][];
+    ) as [TriggerKey, TriggerConfig][];
 
     const triggerKeys = config.map((entry) => entry[0]);
     core.info(`🔫 running actionslaw [${triggerKeys}] triggers`);
@@ -31,11 +31,10 @@ export class ActionslawAction {
       allItems.map((item) => TriggerCache.isCached(item.key)),
     );
 
-    const uncached: Item[] =
-      cacheChecks
-        .map<[boolean, Item]>((check, i) => [check, allItems[i]])
-        .filter(([cached, _]) => !cached)
-        .map<Item>(([_, item]) => item)
+    const uncached: Item[] = cacheChecks
+      .map<[boolean, Item]>((check, i) => [check, allItems[i]])
+      .filter(([cached, _]) => !cached)
+      .map<Item>(([_, item]) => item);
 
     console.debug(`🔫 triggering [${uncached.flat().map((item) => item.key)}]`);
 

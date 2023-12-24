@@ -1,5 +1,5 @@
 import { Item, Trigger } from "./Trigger";
-import { Config } from "../Config";
+import { TriggerConfig } from "./TriggerConfig";
 
 interface MockConfig {
   readonly repititions?: number;
@@ -9,7 +9,7 @@ interface MockConfig {
 export class MockTrigger extends Trigger {
   private readonly config: MockConfig;
 
-  constructor(config: Config) {
+  constructor(config: TriggerConfig) {
     super();
     this.config = config as MockConfig;
   }

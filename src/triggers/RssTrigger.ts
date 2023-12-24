@@ -1,7 +1,7 @@
 import { Item, Key, Trigger } from "./Trigger";
 import Parser from "rss-parser";
 import { createHash } from "crypto";
-import { Config } from "../Config";
+import { TriggerConfig } from "./TriggerConfig";
 
 interface RssConfig {
   readonly url?: string;
@@ -46,7 +46,7 @@ export class RssTrigger extends Trigger {
   private readonly config: RssConfig;
   private readonly parser: Parser = new Parser();
 
-  constructor(config: Config) {
+  constructor(config: TriggerConfig) {
     super();
     this.config = config as RssConfig;
   }
