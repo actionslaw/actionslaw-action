@@ -47,9 +47,9 @@ export class ActionslawAction {
       .filter(([cached, _]) => !cached)
       .map<Item>(([_, item]) => item);
 
-    core.debug(`🔫 triggering [${uncached.flat().map((item) => item.key)}]`);
+    core.debug(`🔫 triggering [${uncached.map((item) => item.key)}]`);
 
-    core.setOutput("items", JSON.stringify(uncached.flat()));
+    core.setOutput("items", JSON.stringify(uncached));
 
     if (config.cache) await TriggerCache.save(uncached.map((item) => item.key));
   }

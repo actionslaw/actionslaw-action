@@ -85548,8 +85548,8 @@ var require_ActionslawAction = __commonJS({
         const ignoreCache = Array(allItems.length).fill(false);
         const checks = config.cache ? await checkCaches() : ignoreCache;
         const uncached = checks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item);
-        core.debug(`\u{1F52B} triggering [${uncached.flat().map((item) => item.key)}]`);
-        core.setOutput("items", JSON.stringify(uncached.flat()));
+        core.debug(`\u{1F52B} triggering [${uncached.map((item) => item.key)}]`);
+        core.setOutput("items", JSON.stringify(uncached));
         if (config.cache)
           await TriggerCache_1.TriggerCache.save(uncached.map((item) => item.key));
       }
