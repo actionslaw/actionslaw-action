@@ -4,16 +4,24 @@ import { TriggerKey, Triggers } from "./triggers/Triggers";
 import { TriggerCache } from "./TriggerCache";
 import { TriggerConfig } from "./triggers/TriggerConfig";
 
+interface Config {
+  triggers: [TriggerKey, TriggerConfig][];
+  cache: boolean;
+}
+
 export class ActionslawAction {
   async run(): Promise<void> {
-    const config = Object.entries<TriggerConfig>(
-      JSON.parse(core.getInput("on", { required: true })),
-    ) as [TriggerKey, TriggerConfig][];
+    const config: Config = {
+      triggers: Object.entries<TriggerConfig>(
+        JSON.parse(core.getInput("on", { required: true })),
+      ) as [TriggerKey, TriggerConfig][],
+      cache: core.getInput("cache") !== "false",
+    };
 
-    const triggerKeys = config.map((entry) => entry[0]);
+    const triggerKeys = config.triggers.map((entry) => entry[0]);
     core.info(`🔫 running actionslaw [${triggerKeys}] triggers`);
 
-    const triggers = config.map((entry) => {
+    const triggers = config.triggers.map((entry) => {
       const [triggerKey, triggerConfig] = entry;
       return Triggers.for(triggerKey)!(triggerConfig);
     });
@@ -27,11 +35,14 @@ export class ActionslawAction {
 
     core.debug(`🔫 found [${keys}] triggers`);
 
-    const cacheChecks: boolean[] = await Promise.all(
-      allItems.map((item) => TriggerCache.isCached(item.key)),
-    );
+    const checkCaches = () =>
+      Promise.all(allItems.map((item) => TriggerCache.isCached(item.key)));
 
-    const uncached: Item[] = cacheChecks
+    const ignoreCache = Array<boolean>(allItems.length).fill(false);
+
+    const checks: boolean[] = config.cache ? await checkCaches() : ignoreCache;
+
+    const uncached: Item[] = checks
       .map<[boolean, Item]>((check, i) => [check, allItems[i]])
       .filter(([cached, _]) => !cached)
       .map<Item>(([_, item]) => item);
@@ -40,6 +51,6 @@ export class ActionslawAction {
 
     core.setOutput("items", JSON.stringify(uncached.flat()));
 
-    await TriggerCache.save(uncached.map((item) => item.key));
+    if (config.cache) await TriggerCache.save(uncached.map((item) => item.key));
   }
 }

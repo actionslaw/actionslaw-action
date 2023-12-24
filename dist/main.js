@@ -85530,10 +85530,13 @@ var require_ActionslawAction = __commonJS({
     var TriggerCache_1 = require_TriggerCache();
     var ActionslawAction = class {
       async run() {
-        const config = Object.entries(JSON.parse(core.getInput("on", { required: true })));
-        const triggerKeys = config.map((entry) => entry[0]);
+        const config = {
+          triggers: Object.entries(JSON.parse(core.getInput("on", { required: true }))),
+          cache: core.getInput("cache") !== "false"
+        };
+        const triggerKeys = config.triggers.map((entry) => entry[0]);
         core.info(`\u{1F52B} running actionslaw [${triggerKeys}] triggers`);
-        const triggers = config.map((entry) => {
+        const triggers = config.triggers.map((entry) => {
           const [triggerKey, triggerConfig] = entry;
           return Triggers_1.Triggers.for(triggerKey)(triggerConfig);
         });
@@ -85541,11 +85544,14 @@ var require_ActionslawAction = __commonJS({
         const allItems = items.flat();
         const keys = allItems.map((item) => item.key);
         core.debug(`\u{1F52B} found [${keys}] triggers`);
-        const cacheChecks = await Promise.all(allItems.map((item) => TriggerCache_1.TriggerCache.isCached(item.key)));
-        const uncached = cacheChecks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item);
+        const checkCaches = () => Promise.all(allItems.map((item) => TriggerCache_1.TriggerCache.isCached(item.key)));
+        const ignoreCache = Array(allItems.length).fill(false);
+        const checks = config.cache ? await checkCaches() : ignoreCache;
+        const uncached = checks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item);
         core.debug(`\u{1F52B} triggering [${uncached.flat().map((item) => item.key)}]`);
         core.setOutput("items", JSON.stringify(uncached.flat()));
-        await TriggerCache_1.TriggerCache.save(uncached.map((item) => item.key));
+        if (config.cache)
+          await TriggerCache_1.TriggerCache.save(uncached.map((item) => item.key));
       }
     };
     exports2.ActionslawAction = ActionslawAction;
