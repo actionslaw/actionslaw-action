@@ -19,7 +19,7 @@ jobs:
   actionslaw:
     runs-on: ubuntu-latest
     steps:
-      - uses: actionslaw/actionslaw-action@v0.17
+      - uses: actionslaw/actionslaw-action@v1
         with:
           on: '{ "rss": { "url": "https://hnrss.org/newest?points=300&count=3" } }'
 
