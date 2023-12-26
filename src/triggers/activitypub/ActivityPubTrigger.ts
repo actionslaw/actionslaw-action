@@ -8,10 +8,11 @@ import { htmlToText } from "html-to-text";
 interface ActivityPubConfig {
   readonly host?: string;
   readonly user?: string;
+  readonly cutoff?: number;
 }
 
 type Minutes = number;
-const cutoffPeriod: Minutes = 30;
+const defaultCutoff: Minutes = 30;
 
 export class ActivityPubTrigger implements Trigger {
   private readonly config: ActivityPubConfig;
@@ -28,6 +29,9 @@ export class ActivityPubTrigger implements Trigger {
       );
 
       const actor = await ActivityPub.forAccount(account);
+      const cutoffPeriod: number = this.config.cutoff
+        ? this.config.cutoff
+        : defaultCutoff;
 
       if (actor) {
         const activities = await ActivityPub.activitiesFor(actor);

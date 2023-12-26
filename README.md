@@ -44,10 +44,11 @@ jobs:
 
 The action inputs are:
 
-| Input   | Description                             | Required/Default |
-| ------- | --------------------------------------- | ---------------- |
-| `on`    | JSON trigger configuration (see below). | Required         |
-| `cache` | Enable trigger cache.                   | `true`           |
+| Input    | Description                                      | Required/Default |
+| -------- | ------------------------------------------------ | ---------------- |
+| `on`     | JSON trigger configuration (see below).          | Required         |
+| `cache`  | Enable trigger cache.                            | `true`           |
+| `cutoff` | Period in minutes before which posts ar ignored. | `30`             |
 
 ### ActivityPub Trigger
 

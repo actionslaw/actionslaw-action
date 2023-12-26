@@ -35649,7 +35649,7 @@ var require_ActivityPubTrigger = __commonJS({
     var ActivityPub_1 = require_ActivityPub();
     var WebFinger_1 = require_WebFinger();
     var html_to_text_1 = require_html_to_text();
-    var cutoffPeriod = 30;
+    var defaultCutoff = 30;
     var ActivityPubTrigger = class {
       config;
       constructor(config) {
@@ -35659,6 +35659,7 @@ var require_ActivityPubTrigger = __commonJS({
         if (this.config.host && this.config.user) {
           const account = await WebFinger_1.WebFinger.discover(this.config.host, this.config.user);
           const actor = await ActivityPub_1.ActivityPub.forAccount(account);
+          const cutoffPeriod = this.config.cutoff ? this.config.cutoff : defaultCutoff;
           if (actor) {
             const activities = await ActivityPub_1.ActivityPub.activitiesFor(actor);
             const cutoff = new Date(Date.now());
