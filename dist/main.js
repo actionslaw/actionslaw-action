@@ -18854,9 +18854,9 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
   }
 });
 
-// lib/triggers/Trigger.js
+// lib/src/triggers/Trigger.js
 var require_Trigger = __commonJS({
-  "lib/triggers/Trigger.js"(exports2) {
+  "lib/src/triggers/Trigger.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Trigger = void 0;
@@ -18866,9 +18866,9 @@ var require_Trigger = __commonJS({
   }
 });
 
-// lib/triggers/MockTrigger.js
+// lib/src/triggers/MockTrigger.js
 var require_MockTrigger = __commonJS({
-  "lib/triggers/MockTrigger.js"(exports2) {
+  "lib/src/triggers/MockTrigger.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.MockTrigger = void 0;
@@ -25617,9 +25617,9 @@ var require_rss_parser = __commonJS({
   }
 });
 
-// lib/triggers/RssTrigger.js
+// lib/src/triggers/RssTrigger.js
 var require_RssTrigger = __commonJS({
-  "lib/triggers/RssTrigger.js"(exports2) {
+  "lib/src/triggers/RssTrigger.js"(exports2) {
     "use strict";
     var __importDefault2 = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -25680,9 +25680,9 @@ var require_RssTrigger = __commonJS({
   }
 });
 
-// lib/triggers/activitypub/Post.js
+// lib/src/triggers/activitypub/Post.js
 var require_Post = __commonJS({
-  "lib/triggers/activitypub/Post.js"(exports2) {
+  "lib/src/triggers/activitypub/Post.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Post = void 0;
@@ -25703,9 +25703,9 @@ var require_Post = __commonJS({
   }
 });
 
-// lib/triggers/activitypub/Outbox.js
+// lib/src/triggers/activitypub/Outbox.js
 var require_Outbox = __commonJS({
-  "lib/triggers/activitypub/Outbox.js"(exports2) {
+  "lib/src/triggers/activitypub/Outbox.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.fromJson = void 0;
@@ -28350,9 +28350,9 @@ var require_HttpClient = __commonJS({
   }
 });
 
-// lib/triggers/activitypub/ActivityPub.js
+// lib/src/triggers/activitypub/ActivityPub.js
 var require_ActivityPub = __commonJS({
-  "lib/triggers/activitypub/ActivityPub.js"(exports2) {
+  "lib/src/triggers/activitypub/ActivityPub.js"(exports2) {
     "use strict";
     var __createBinding2 = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
       if (k2 === void 0)
@@ -28420,9 +28420,9 @@ var require_ActivityPub = __commonJS({
   }
 });
 
-// lib/triggers/activitypub/WebFinger.js
+// lib/src/triggers/activitypub/WebFinger.js
 var require_WebFinger = __commonJS({
-  "lib/triggers/activitypub/WebFinger.js"(exports2) {
+  "lib/src/triggers/activitypub/WebFinger.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.WebFinger = void 0;
@@ -35646,9 +35646,9 @@ var require_html_to_text = __commonJS({
   }
 });
 
-// lib/triggers/activitypub/ActivityPubTrigger.js
+// lib/src/triggers/activitypub/ActivityPubTrigger.js
 var require_ActivityPubTrigger = __commonJS({
-  "lib/triggers/activitypub/ActivityPubTrigger.js"(exports2) {
+  "lib/src/triggers/activitypub/ActivityPubTrigger.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ActivityPubTrigger = void 0;
@@ -35701,9 +35701,9 @@ var require_ActivityPubTrigger = __commonJS({
   }
 });
 
-// lib/triggers/Triggers.js
+// lib/src/triggers/Triggers.js
 var require_Triggers = __commonJS({
-  "lib/triggers/Triggers.js"(exports2) {
+  "lib/src/triggers/Triggers.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Triggers = void 0;
@@ -85436,9 +85436,9 @@ var require_cache2 = __commonJS({
   }
 });
 
-// lib/TriggerCache.js
+// lib/src/TriggerCache.js
 var require_TriggerCache = __commonJS({
-  "lib/TriggerCache.js"(exports2) {
+  "lib/src/TriggerCache.js"(exports2) {
     "use strict";
     var __createBinding2 = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
       if (k2 === void 0)
@@ -85497,9 +85497,42 @@ var require_TriggerCache = __commonJS({
   }
 });
 
-// lib/ActionslawAction.js
+// lib/package.json
+var require_package = __commonJS({
+  "lib/package.json"(exports2, module2) {
+    module2.exports = {
+      name: "actionslow-action",
+      version: "1.1.0",
+      description: "Action to trigger Actionslaw workflows",
+      main: "dist/main.js",
+      author: "Ric Wood <ric@grislyeye.com>",
+      scripts: {
+        build: "tsc && npm run pack",
+        start: "node --env-file=.env dist/main.js",
+        pack: "esbuild lib/src/main.js --outfile=dist/main.js  --bundle --platform=node --target=node20"
+      },
+      devDependencies: {
+        "@actions/cache": "^3.2.2",
+        "@actions/core": "^1.10.1",
+        "@tsconfig/node20": "^20.1.2",
+        "@types/fs-extra": "^11.0.4",
+        "@types/html-to-text": "^9.0.4",
+        "@types/node": "^20.10.5",
+        esbuild: "^0.19.10",
+        "html-to-text": "^9.0.5",
+        "resolve-cwd": "^3.0.0",
+        "typed-rest-client": "^1.8.11"
+      },
+      dependencies: {
+        "rss-parser": "^3.13.0"
+      }
+    };
+  }
+});
+
+// lib/src/ActionslawAction.js
 var require_ActionslawAction = __commonJS({
-  "lib/ActionslawAction.js"(exports2) {
+  "lib/src/ActionslawAction.js"(exports2) {
     "use strict";
     var __createBinding2 = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
       if (k2 === void 0)
@@ -85533,11 +85566,15 @@ var require_ActionslawAction = __commonJS({
       __setModuleDefault2(result, mod);
       return result;
     };
+    var __importDefault2 = exports2 && exports2.__importDefault || function(mod) {
+      return mod && mod.__esModule ? mod : { "default": mod };
+    };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ActionslawAction = void 0;
     var core = __importStar2(require_core());
     var Triggers_1 = require_Triggers();
     var TriggerCache_1 = require_TriggerCache();
+    var package_json_1 = __importDefault2(require_package());
     var ActionslawAction = class {
       async run() {
         const config = {
@@ -85545,7 +85582,7 @@ var require_ActionslawAction = __commonJS({
           cache: core.getInput("cache") !== "false"
         };
         const triggerKeys = config.triggers.map((entry) => entry[0]);
-        core.info(`\u{1F52B} running actionslaw [${triggerKeys}] triggers`);
+        core.info(`\u{1F52B} running actionslaw [${triggerKeys}] triggers (v${package_json_1.default.version})`);
         const triggers = config.triggers.map((entry) => {
           const [triggerKey, triggerConfig] = entry;
           return Triggers_1.Triggers.for(triggerKey)(triggerConfig);
@@ -85568,7 +85605,7 @@ var require_ActionslawAction = __commonJS({
   }
 });
 
-// lib/main.js
+// lib/src/main.js
 Object.defineProperty(exports, "__esModule", { value: true });
 var ActionslawAction_1 = require_ActionslawAction();
 var action = new ActionslawAction_1.ActionslawAction();

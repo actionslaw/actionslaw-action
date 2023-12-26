@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "compilerOptions": {
+    "resolveJsonModule": true,
     "preserveConstEnums": true,
     "outDir": "lib/"
   },

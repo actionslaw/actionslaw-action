@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc && npm run pack",
     "start": "node --env-file=.env dist/main.js",
-    "pack": "esbuild lib/main.js --outfile=dist/main.js  --bundle --platform=node --target=node20"
+    "pack": "esbuild lib/src/main.js --outfile=dist/main.js  --bundle --platform=node --target=node20"
   },
   "devDependencies": {
     "@actions/cache": "^3.2.2",

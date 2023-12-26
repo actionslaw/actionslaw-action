@@ -3,6 +3,7 @@ import { Key, Item } from "./triggers/Trigger";
 import { TriggerKey, Triggers } from "./triggers/Triggers";
 import { TriggerCache } from "./TriggerCache";
 import { TriggerConfig } from "./triggers/TriggerConfig";
+import project from "../package.json";
 
 interface Config {
   triggers: [TriggerKey, TriggerConfig][];
@@ -19,7 +20,9 @@ export class ActionslawAction {
     };
 
     const triggerKeys = config.triggers.map((entry) => entry[0]);
-    core.info(`🔫 running actionslaw [${triggerKeys}] triggers`);
+    core.info(
+      `🔫 running actionslaw [${triggerKeys}] triggers (v${project.version})`,
+    );
 
     const triggers = config.triggers.map((entry) => {
       const [triggerKey, triggerConfig] = entry;
