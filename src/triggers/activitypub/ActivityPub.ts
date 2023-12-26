@@ -23,7 +23,7 @@ export class ActivityPub {
     return undefined;
   }
 
-  static async activitiesFor(actor: Actor): Promise<Activity[] | undefined> {
+  static async activitiesFor(actor: Actor): Promise<Activity[]> {
     const uri = `${actor.outbox}?page=true`;
     const response = await ActivityPub.http.get(uri, ActivityPub.accept);
     const body = await response.readBody();
