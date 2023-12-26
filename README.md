@@ -68,8 +68,6 @@ Configured as follows:
 - `user`, required, source user account
 - `cutoff`, optional (default `30`), grace period in minutes before which posts are ignored
 
-> You can use [General Config for Actionsflow Trigger](https://actionsflow.github.io/docs/workflow/#ontriggerconfig) for more customization.
-
 #### Outputs
 
 This trigger's outputs will be the following object.
