@@ -10,7 +10,7 @@
     "start": "node --env-file=.env dist/main.js",
     "test": "npm run lint",
     "pack": "esbuild lib/src/main.js --outfile=dist/main.js  --bundle --platform=node --target=node20",
-    "lint": "trunk check"
+    "lint": "trunk init --ci && trunk check"
   },
   "devDependencies": {
     "@actions/cache": "^3.2.2",
