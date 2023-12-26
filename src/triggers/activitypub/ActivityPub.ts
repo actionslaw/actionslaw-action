@@ -16,7 +16,11 @@ export class ActivityPub {
     if (uri) {
       const response = await ActivityPub.http.get(uri, ActivityPub.accept);
       const body = await response.readBody();
-      const user: Actor = JSON.parse(body);
+      const outbox = JSON.parse(body) as { readonly outbox: string };
+      const user: Actor = {
+        self: uri,
+        outbox: outbox.outbox,
+      };
       return user;
     }
 

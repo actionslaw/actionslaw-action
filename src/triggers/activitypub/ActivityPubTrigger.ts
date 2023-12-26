@@ -1,7 +1,9 @@
 import { Item, Trigger } from "../Trigger";
 import { TriggerConfig } from "../TriggerConfig";
 import { Post } from "./Post";
+import { Activity } from "./Activity";
 import { ActivityPub } from "./ActivityPub";
+import { Actor } from "./Actor";
 import { WebFinger } from "./WebFinger";
 import { htmlToText } from "html-to-text";
 
@@ -13,6 +15,12 @@ interface ActivityPubConfig {
 
 type Minutes = number;
 const defaultCutoff: Minutes = 30;
+
+const directRepliesOnlyFor: (actor: Actor) => (activity: Activity) => boolean =
+  (actor: Actor) => (activity: Activity) =>
+    !activity.object.inReplyTo ||
+    (activity.cc.length === 1 &&
+      activity.cc.includes(`${actor.self}/followers`));
 
 export class ActivityPubTrigger implements Trigger {
   private readonly config: ActivityPubConfig;
@@ -43,7 +51,8 @@ export class ActivityPubTrigger implements Trigger {
         const notes = activities!
           .filter((activity) => activity.type == "Create")
           .filter((activity) => activity.object.type == "Note")
-          .filter((activity) => activity.published > cutoff);
+          .filter((activity) => activity.published > cutoff)
+          .filter(directRepliesOnlyFor(actor));
 
         const posts = notes!.map((activity) => {
           const text = htmlToText(activity.object.contentMap.en, {
@@ -56,8 +65,9 @@ export class ActivityPubTrigger implements Trigger {
               },
             },
           });
+          const item = activity.object;
 
-          return new Post(activity.id, text);
+          return new Post(activity.id, text, item.inReplyTo);
         });
 
         return posts;

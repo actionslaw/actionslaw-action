@@ -25689,9 +25689,11 @@ var require_Post = __commonJS({
     var Post = class {
       uri;
       message;
-      constructor(uri, message) {
+      replyto;
+      constructor(uri, message, replyto) {
         this.uri = uri;
         this.message = message;
+        this.replyto = replyto;
       }
       get key() {
         return this.uri;
@@ -25714,6 +25716,7 @@ var require_Outbox = __commonJS({
           id: item.id,
           type: item.type,
           published: new Date(Date.parse(item.published)),
+          cc: item.cc,
           object: item.object
         };
       });
@@ -28397,7 +28400,11 @@ var require_ActivityPub = __commonJS({
         if (uri) {
           const response = await _ActivityPub.http.get(uri, _ActivityPub.accept);
           const body = await response.readBody();
-          const user = JSON.parse(body);
+          const outbox = JSON.parse(body);
+          const user = {
+            self: uri,
+            outbox: outbox.outbox
+          };
           return user;
         }
         return void 0;
@@ -35650,6 +35657,7 @@ var require_ActivityPubTrigger = __commonJS({
     var WebFinger_1 = require_WebFinger();
     var html_to_text_1 = require_html_to_text();
     var defaultCutoff = 30;
+    var directRepliesOnlyFor = (actor) => (activity) => !activity.object.inReplyTo || activity.cc.length === 1 && activity.cc.includes(`${actor.self}/followers`);
     var ActivityPubTrigger = class {
       config;
       constructor(config) {
@@ -35665,7 +35673,7 @@ var require_ActivityPubTrigger = __commonJS({
             const cutoff = new Date(Date.now());
             const adjustment = cutoff.getMinutes() - cutoffPeriod;
             cutoff.setMinutes(adjustment);
-            const notes = activities.filter((activity) => activity.type == "Create").filter((activity) => activity.object.type == "Note").filter((activity) => activity.published > cutoff);
+            const notes = activities.filter((activity) => activity.type == "Create").filter((activity) => activity.object.type == "Note").filter((activity) => activity.published > cutoff).filter(directRepliesOnlyFor(actor));
             const posts = notes.map((activity) => {
               const text = (0, html_to_text_1.htmlToText)(activity.object.contentMap.en, {
                 wordwrap: false,
@@ -35677,7 +35685,8 @@ var require_ActivityPubTrigger = __commonJS({
                   }
                 }
               });
-              return new Post_1.Post(activity.id, text);
+              const item = activity.object;
+              return new Post_1.Post(activity.id, text, item.inReplyTo);
             });
             return posts;
           } else {

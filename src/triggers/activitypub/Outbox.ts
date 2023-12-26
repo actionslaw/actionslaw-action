@@ -5,6 +5,7 @@ interface Outbox {
     readonly id: string;
     readonly type: string;
     readonly published: string;
+    readonly cc: string[];
     readonly object: {
       readonly type: String;
       readonly contentMap: Record<string, string>;
@@ -19,6 +20,7 @@ export function fromJson(json: string): Activity[] {
       id: item.id,
       type: item.type,
       published: new Date(Date.parse(item.published)),
+      cc: item.cc,
       object: item.object,
     };
   });
