@@ -44,11 +44,10 @@ jobs:
 
 The action inputs are:
 
-| Input    | Description                                      | Required/Default |
-| -------- | ------------------------------------------------ | ---------------- |
-| `on`     | JSON trigger configuration (see below).          | Required         |
-| `cache`  | Enable trigger cache.                            | `true`           |
-| `cutoff` | Period in minutes before which posts ar ignored. | `30`             |
+| Input   | Description                             | Required/Default |
+| ------- | --------------------------------------- | ---------------- |
+| `on`    | JSON trigger configuration (see below). | Required         |
+| `cache` | Enable trigger cache.                   | `true`           |
 
 ### ActivityPub Trigger
 
@@ -67,6 +66,7 @@ Configured as follows:
 
 - `host`, required, hostname of source ActivityPub instance
 - `user`, required, source user account
+- `cutoff`, optional (default `30`), grace period in minutes before which posts are ignored
 
 > You can use [General Config for Actionsflow Trigger](https://actionsflow.github.io/docs/workflow/#ontriggerconfig) for more customization.
 
