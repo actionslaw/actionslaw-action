@@ -1,4 +1,4 @@
-# Actionslaw Action
+# Actionslaw Action [![Build](https://github.com/actionslaw/actionslaw-action/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/actionslaw/actionslaw-action/actions/workflows/test.yml)
 
 GitHub Action to trigger automated [Actionslaw](https://github.com/actionslaw) workflows.
 
