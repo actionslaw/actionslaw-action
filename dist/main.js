@@ -85502,12 +85502,13 @@ var require_package = __commonJS({
   "lib/package.json"(exports2, module2) {
     module2.exports = {
       name: "actionslow-action",
-      version: "1.1.0",
+      version: "1.1.1",
       description: "Action to trigger Actionslaw workflows",
       main: "dist/main.js",
       author: "Ric Wood <ric@grislyeye.com>",
       scripts: {
-        build: "tsc && npm run pack",
+        build: "npm run clean && tsc && npm run pack",
+        clean: "rimraf lib",
         start: "node --env-file=.env dist/main.js",
         pack: "esbuild lib/src/main.js --outfile=dist/main.js  --bundle --platform=node --target=node20"
       },
@@ -85521,10 +85522,9 @@ var require_package = __commonJS({
         esbuild: "^0.19.10",
         "html-to-text": "^9.0.5",
         "resolve-cwd": "^3.0.0",
+        rimraf: "^5.0.5",
+        "rss-parser": "^3.13.0",
         "typed-rest-client": "^1.8.11"
-      },
-      dependencies: {
-        "rss-parser": "^3.13.0"
       }
     };
   }
