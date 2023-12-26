@@ -1,3 +1,7 @@
+interface Attachment {
+  url: string;
+}
+
 export interface Activity {
   readonly id: string;
   readonly type: string;
@@ -7,5 +11,6 @@ export interface Activity {
     readonly type: String;
     readonly contentMap: Record<string, string>;
     readonly inReplyTo?: string;
+    readonly attachment?: Attachment[];
   };
 }

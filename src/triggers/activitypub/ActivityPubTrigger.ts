@@ -5,6 +5,7 @@ import { Activity } from "./Activity";
 import { ActivityPub } from "./ActivityPub";
 import { Actor } from "./Actor";
 import { WebFinger } from "./WebFinger";
+import { Media } from "../Media";
 import { htmlToText } from "html-to-text";
 
 interface ActivityPubConfig {
@@ -54,7 +55,7 @@ export class ActivityPubTrigger implements Trigger {
           .filter((activity) => activity.published > cutoff)
           .filter(directRepliesOnlyFor(actor));
 
-        const posts = notes!.map((activity) => {
+        const posts = notes!.map(async (activity) => {
           const text = htmlToText(activity.object.contentMap.en, {
             wordwrap: false,
             tags: {
@@ -67,10 +68,20 @@ export class ActivityPubTrigger implements Trigger {
           });
           const item = activity.object;
 
-          return new Post(activity.id, text, item.inReplyTo);
+          const mediaCacheKey = await Media.cache(
+            activity.id,
+            activity.object.attachment!.map((media) => media.url),
+          );
+
+          return new Post(
+            activity.id,
+            text,
+            item.inReplyTo,
+            mediaCacheKey ? mediaCacheKey.toString() : undefined,
+          );
         });
 
-        return posts;
+        return Promise.all(posts);
       } else {
         throw new Error(
           `No user found for [@${this.config.user}@${this.config.host}]`,

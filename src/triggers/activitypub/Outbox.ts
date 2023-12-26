@@ -9,6 +9,7 @@ interface Outbox {
     readonly object: {
       readonly type: String;
       readonly contentMap: Record<string, string>;
+      readonly attachment?: [];
     };
   }[];
 }
