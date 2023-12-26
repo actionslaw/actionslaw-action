@@ -96,10 +96,12 @@ jobs:
           uri: ${{on.activitypub.outputs.uri}}
           message: ${{on.activitypub.outputs.message}}
           reply: ${{ on.activitypub.outputs.replyto}}
+          media: ${{ on.activitypub.outputs.media}}
         run: |
           echo uri: $uri
           echo message: $message
           echo reply: $reply
+          echo media: $media
 ```
 
 #### Limitations

@@ -26,10 +26,10 @@ export class Media {
     );
   }
 
-  static async cache(key: string, urls: string[]): Promise<number | undefined> {
+  static async cache(key: string, urls: string[]): Promise<void> {
     if (urls.length > 0) {
       await Media.download(urls);
-      return await cache.saveCache([`${Media.folder}/**`], key);
+      await cache.saveCache([`${Media.folder}/**`], key);
     }
   }
 }

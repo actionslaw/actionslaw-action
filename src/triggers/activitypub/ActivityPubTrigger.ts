@@ -68,7 +68,7 @@ export class ActivityPubTrigger implements Trigger {
           });
           const item = activity.object;
 
-          const mediaCacheKey = await Media.cache(
+          await Media.cache(
             activity.id,
             activity.object.attachment!.map((media) => media.url),
           );
@@ -77,7 +77,7 @@ export class ActivityPubTrigger implements Trigger {
             activity.id,
             text,
             item.inReplyTo,
-            mediaCacheKey ? mediaCacheKey.toString() : undefined,
+            activity.object.attachment!.length > 0 ? activity.id : undefined,
           );
         });
 

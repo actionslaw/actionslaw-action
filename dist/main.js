@@ -78214,7 +78214,7 @@ var require_Media = __commonJS({
       static async cache(key, urls) {
         if (urls.length > 0) {
           await _Media.download(urls);
-          return await cache.saveCache([`${_Media.folder}/**`], key);
+          await cache.saveCache([`${_Media.folder}/**`], key);
         }
       }
     };
@@ -85468,8 +85468,8 @@ var require_ActivityPubTrigger = __commonJS({
                 }
               });
               const item = activity.object;
-              const mediaCacheKey = await Media_1.Media.cache(activity.id, activity.object.attachment.map((media) => media.url));
-              return new Post_1.Post(activity.id, text, item.inReplyTo, mediaCacheKey ? mediaCacheKey.toString() : void 0);
+              await Media_1.Media.cache(activity.id, activity.object.attachment.map((media) => media.url));
+              return new Post_1.Post(activity.id, text, item.inReplyTo, activity.object.attachment.length > 0 ? activity.id : void 0);
             });
             return Promise.all(posts);
           } else {
