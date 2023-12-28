@@ -85438,7 +85438,7 @@ var require_ActivityPubTrigger = __commonJS({
     var Media_1 = require_Media();
     var html_to_text_1 = require_html_to_text();
     var defaultCutoff = 30;
-    var directRepliesOnlyFor = (actor) => (activity) => !activity.object.inReplyTo || activity.cc.length === 1 && activity.cc.includes(`${actor.self}/followers`);
+    var directRepliesOnlyFor = (actor) => (activity) => !activity.object.inReplyTo || activity.object.inReplyTo.startsWith(actor.self);
     var ActivityPubTrigger = class {
       config;
       constructor(config) {

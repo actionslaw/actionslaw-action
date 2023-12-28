@@ -5,7 +5,6 @@ interface Attachment {
 export interface Activity {
   readonly id: string;
   readonly type: string;
-  readonly cc: string[];
   readonly published: Date;
   readonly object: {
     readonly type: String;

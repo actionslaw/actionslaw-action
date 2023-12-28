@@ -20,8 +20,7 @@ const defaultCutoff: Minutes = 30;
 const directRepliesOnlyFor: (actor: Actor) => (activity: Activity) => boolean =
   (actor: Actor) => (activity: Activity) =>
     !activity.object.inReplyTo ||
-    (activity.cc.length === 1 &&
-      activity.cc.includes(`${actor.self}/followers`));
+    activity.object.inReplyTo.startsWith(actor.self);
 
 export class ActivityPubTrigger implements Trigger {
   private readonly config: ActivityPubConfig;
