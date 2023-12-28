@@ -25711,17 +25711,25 @@ var require_Outbox = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.fromJson = void 0;
+    function findParentReplies(source, outbox, accumulator = [], depth = 5) {
+      const parent = outbox.orderedItems.filter((item) => item.object.id === source.object.inReplyTo)[0];
+      if (parent && depth > 1)
+        return findParentReplies(parent, outbox, accumulator.concat([toActivity(parent)]), depth - 1);
+      else
+        return accumulator;
+    }
+    function toActivity(item, replies = []) {
+      return {
+        id: item.id,
+        type: item.type,
+        replies,
+        published: new Date(Date.parse(item.published)),
+        object: item.object
+      };
+    }
     function fromJson(json) {
       const outbox = JSON.parse(json);
-      return outbox.orderedItems.map((item) => {
-        return {
-          id: item.id,
-          type: item.type,
-          published: new Date(Date.parse(item.published)),
-          cc: item.cc,
-          object: item.object
-        };
-      });
+      return outbox.orderedItems.map((item) => toActivity(item, findParentReplies(item, outbox)));
     }
     exports2.fromJson = fromJson;
   }
@@ -85438,7 +85446,7 @@ var require_ActivityPubTrigger = __commonJS({
     var Media_1 = require_Media();
     var html_to_text_1 = require_html_to_text();
     var defaultCutoff = 30;
-    var directRepliesOnlyFor = (actor) => (activity) => !activity.object.inReplyTo || activity.object.inReplyTo.startsWith(actor.self);
+    var directRepliesOnlyFor = (actor) => (activity) => !activity.object.inReplyTo || activity.object.inReplyTo.startsWith(actor.self) && !activity.replies.some((reply) => reply.object.inReplyTo && !reply.object.inReplyTo.startsWith(actor.self));
     var ActivityPubTrigger = class {
       config;
       constructor(config) {

@@ -20,7 +20,12 @@ const defaultCutoff: Minutes = 30;
 const directRepliesOnlyFor: (actor: Actor) => (activity: Activity) => boolean =
   (actor: Actor) => (activity: Activity) =>
     !activity.object.inReplyTo ||
-    activity.object.inReplyTo.startsWith(actor.self);
+    (activity.object.inReplyTo.startsWith(actor.self) &&
+      !activity.replies.some(
+        (reply) =>
+          reply.object.inReplyTo &&
+          !reply.object.inReplyTo.startsWith(actor.self),
+      ));
 
 export class ActivityPubTrigger implements Trigger {
   private readonly config: ActivityPubConfig;
