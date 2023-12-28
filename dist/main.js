@@ -85456,7 +85456,7 @@ var require_ActivityPubTrigger = __commonJS({
             cutoff.setMinutes(adjustment);
             const notes = activities.filter((activity) => activity.type == "Create").filter((activity) => activity.object.type == "Note").filter((activity) => activity.published > cutoff).filter(directRepliesOnlyFor(actor));
             const posts = notes.map(async (activity) => {
-              const text = (0, html_to_text_1.htmlToText)(activity.object.contentMap.en, {
+              const text = (0, html_to_text_1.htmlToText)(activity.object.content, {
                 wordwrap: false,
                 tags: {
                   a: {
@@ -85576,7 +85576,7 @@ var require_package = __commonJS({
   "lib/package.json"(exports2, module2) {
     module2.exports = {
       name: "actionslow-action",
-      version: "1.2.1",
+      version: "1.2.2",
       description: "Action to trigger Actionslaw workflows",
       main: "dist/main.js",
       author: "Ric Wood <ric@grislyeye.com>",

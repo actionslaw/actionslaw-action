@@ -8,7 +8,7 @@ export interface Activity {
   readonly published: Date;
   readonly object: {
     readonly type: String;
-    readonly contentMap: Record<string, string>;
+    readonly content: string;
     readonly inReplyTo?: string;
     readonly attachment?: Attachment[];
   };

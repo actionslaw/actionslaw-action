@@ -113,7 +113,6 @@ Please note that:
 - **Alt text.** We do not currently support image alt texts, but we're hoping to implement this soon.
 - **No polls.** We do not currently support poll posts.
 - **Public only.** We only support public ActivityPub posts.
-- **English only.** We currently only support posts using the `en` (English) language code.
 
 ### RSS Trigger
 

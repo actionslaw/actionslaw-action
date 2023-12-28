@@ -55,7 +55,7 @@ export class ActivityPubTrigger implements Trigger {
           .filter(directRepliesOnlyFor(actor));
 
         const posts = notes!.map(async (activity) => {
-          const text = htmlToText(activity.object.contentMap.en, {
+          const text = htmlToText(activity.object.content, {
             wordwrap: false,
             tags: {
               a: {

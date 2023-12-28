@@ -7,8 +7,8 @@ interface Outbox {
     readonly published: string;
     readonly cc: string[];
     readonly object: {
-      readonly type: String;
-      readonly contentMap: Record<string, string>;
+      readonly type: string;
+      readonly content: string;
       readonly attachment?: [];
     };
   }[];
