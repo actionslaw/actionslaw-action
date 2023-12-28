@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import { mkdir } from "fs/promises";
 import { Readable } from "stream";
 import { finished } from "stream/promises";
 import * as path from "path";
@@ -15,7 +14,7 @@ export class Media {
         .map((url) => new URL(url))
         .map(async (mediaUrl) => {
           const media = await fetch(mediaUrl);
-          if (!fs.existsSync(Media.folder)) await mkdir(Media.folder);
+          if (!fs.existsSync(Media.folder)) fs.mkdirSync(Media.folder);
           const fileName = path.basename(mediaUrl.pathname);
           const destination = path.resolve(`./${Media.folder}`, fileName);
           const fileStream = fs.createWriteStream(destination, { flags: "w" });

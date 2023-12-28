@@ -78190,9 +78190,8 @@ var require_Media = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Media = void 0;
     var fs = __importStar2(require("fs"));
-    var promises_1 = require("fs/promises");
     var stream_1 = require("stream");
-    var promises_2 = require("stream/promises");
+    var promises_1 = require("stream/promises");
     var path = __importStar2(require("path"));
     var url_1 = require("url");
     var cache = __importStar2(require_cache2());
@@ -78202,12 +78201,12 @@ var require_Media = __commonJS({
         return Promise.all(urls.map((url) => new url_1.URL(url)).map(async (mediaUrl) => {
           const media = await fetch(mediaUrl);
           if (!fs.existsSync(_Media.folder))
-            await (0, promises_1.mkdir)(_Media.folder);
+            fs.mkdirSync(_Media.folder);
           const fileName = path.basename(mediaUrl.pathname);
           const destination = path.resolve(`./${_Media.folder}`, fileName);
           const fileStream = fs.createWriteStream(destination, { flags: "w" });
           if (media.body) {
-            await (0, promises_2.finished)(stream_1.Readable.fromWeb(media.body).pipe(fileStream));
+            await (0, promises_1.finished)(stream_1.Readable.fromWeb(media.body).pipe(fileStream));
           }
         }));
       }
@@ -85577,7 +85576,7 @@ var require_package = __commonJS({
   "lib/package.json"(exports2, module2) {
     module2.exports = {
       name: "actionslow-action",
-      version: "1.2.0",
+      version: "1.2.1",
       description: "Action to trigger Actionslaw workflows",
       main: "dist/main.js",
       author: "Ric Wood <ric@grislyeye.com>",
