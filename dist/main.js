@@ -85438,6 +85438,38 @@ var require_html_to_text = __commonJS({
 var require_ActivityPubTrigger = __commonJS({
   "lib/src/triggers/activitypub/ActivityPubTrigger.js"(exports2) {
     "use strict";
+    var __createBinding2 = exports2 && exports2.__createBinding || (Object.create ? function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      var desc = Object.getOwnPropertyDescriptor(m, k);
+      if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+        desc = { enumerable: true, get: function() {
+          return m[k];
+        } };
+      }
+      Object.defineProperty(o, k2, desc);
+    } : function(o, m, k, k2) {
+      if (k2 === void 0)
+        k2 = k;
+      o[k2] = m[k];
+    });
+    var __setModuleDefault2 = exports2 && exports2.__setModuleDefault || (Object.create ? function(o, v) {
+      Object.defineProperty(o, "default", { enumerable: true, value: v });
+    } : function(o, v) {
+      o["default"] = v;
+    });
+    var __importStar2 = exports2 && exports2.__importStar || function(mod) {
+      if (mod && mod.__esModule)
+        return mod;
+      var result = {};
+      if (mod != null) {
+        for (var k in mod)
+          if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k))
+            __createBinding2(result, mod, k);
+      }
+      __setModuleDefault2(result, mod);
+      return result;
+    };
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.ActivityPubTrigger = void 0;
     var Post_1 = require_Post();
@@ -85445,6 +85477,7 @@ var require_ActivityPubTrigger = __commonJS({
     var WebFinger_1 = require_WebFinger();
     var Media_1 = require_Media();
     var html_to_text_1 = require_html_to_text();
+    var core = __importStar2(require_core());
     var defaultCutoff = 30;
     var directRepliesOnlyFor = (actor) => (activity) => !activity.object.inReplyTo || activity.object.inReplyTo.startsWith(actor.self) && !activity.replies.some((reply) => reply.object.inReplyTo && !reply.object.inReplyTo.startsWith(actor.self));
     var ActivityPubTrigger = class {
@@ -85455,6 +85488,7 @@ var require_ActivityPubTrigger = __commonJS({
       async run() {
         if (this.config.host && this.config.user) {
           const account = await WebFinger_1.WebFinger.discover(this.config.host, this.config.user);
+          core.info(`\u{1F52B} retrieving activitypub notes for @${this.config.user}@${this.config.host}`);
           const actor = await ActivityPub_1.ActivityPub.forAccount(account);
           const cutoffPeriod = this.config.cutoff ? this.config.cutoff : defaultCutoff;
           if (actor) {
@@ -85667,7 +85701,7 @@ var require_ActionslawAction = __commonJS({
           cache: core.getInput("cache") !== "false"
         };
         const triggerKeys = config.triggers.map((entry) => entry[0]);
-        core.info(`\u{1F52B} running actionslaw [${triggerKeys}] triggers (v${package_json_1.default.version})`);
+        core.info(`\u{1F52B} running actionslaw v${package_json_1.default.version} [${triggerKeys}]`);
         const triggers = config.triggers.map((entry) => {
           const [triggerKey, triggerConfig] = entry;
           return Triggers_1.Triggers.for(triggerKey)(triggerConfig);
@@ -85680,7 +85714,7 @@ var require_ActionslawAction = __commonJS({
         const ignoreCache = Array(allItems.length).fill(false);
         const checks = config.cache ? await checkCaches() : ignoreCache;
         const uncached = checks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item);
-        core.debug(`\u{1F52B} triggering [${uncached.map((item) => item.key)}]`);
+        core.info(`\u{1F52B} triggering [${uncached.map((item) => item.key)}]`);
         core.setOutput("items", JSON.stringify(uncached));
         if (config.cache)
           await TriggerCache_1.TriggerCache.save(uncached.map((item) => item.key));

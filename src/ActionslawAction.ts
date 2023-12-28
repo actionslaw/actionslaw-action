@@ -20,9 +20,7 @@ export class ActionslawAction {
     };
 
     const triggerKeys = config.triggers.map((entry) => entry[0]);
-    core.info(
-      `🔫 running actionslaw [${triggerKeys}] triggers (v${project.version})`,
-    );
+    core.info(`🔫 running actionslaw v${project.version} [${triggerKeys}]`);
 
     const triggers = config.triggers.map((entry) => {
       const [triggerKey, triggerConfig] = entry;
@@ -50,7 +48,7 @@ export class ActionslawAction {
       .filter(([cached, _]) => !cached)
       .map<Item>(([_, item]) => item);
 
-    core.debug(`🔫 triggering [${uncached.map((item) => item.key)}]`);
+    core.info(`🔫 triggering [${uncached.map((item) => item.key)}]`);
 
     core.setOutput("items", JSON.stringify(uncached));
 

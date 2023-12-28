@@ -7,6 +7,7 @@ import { Actor } from "./Actor";
 import { WebFinger } from "./WebFinger";
 import { Media } from "../Media";
 import { htmlToText } from "html-to-text";
+import * as core from "@actions/core";
 
 interface ActivityPubConfig {
   readonly host?: string;
@@ -39,6 +40,10 @@ export class ActivityPubTrigger implements Trigger {
       const account = await WebFinger.discover(
         this.config.host,
         this.config.user,
+      );
+
+      core.info(
+        `🔫 retrieving activitypub notes for @${this.config.user}@${this.config.host}`,
       );
 
       const actor = await ActivityPub.forAccount(account);
