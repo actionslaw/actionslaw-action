@@ -1,1 +1,1 @@
-export type TriggerConfig = [string, string][];
+export interface TriggerConfig {}

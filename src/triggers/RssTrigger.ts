@@ -3,7 +3,7 @@ import Parser from "rss-parser";
 import { createHash } from "crypto";
 import { TriggerConfig } from "./TriggerConfig";
 
-interface RssConfig {
+export interface RssConfig extends TriggerConfig {
   readonly url?: string;
 }
 
@@ -46,9 +46,9 @@ export class RssTrigger extends Trigger {
   private readonly config: RssConfig;
   private readonly parser: Parser = new Parser();
 
-  constructor(config: TriggerConfig) {
+  constructor(config: RssConfig) {
     super();
-    this.config = config as RssConfig;
+    this.config = config;
   }
 
   async run(): Promise<Item[]> {

@@ -28439,8 +28439,9 @@ var require_WebFinger = __commonJS({
     var HttpClient_1 = require_HttpClient();
     var WebFinger = class _WebFinger {
       static http = new HttpClient_1.HttpClient("@actionsflow/trigger-activitypub");
-      static async discover(host, user) {
-        const uri = `https://${host}/.well-known/webfinger?resource=acct:${user}@${host}`;
+      static async discover(server, config) {
+        const webFingerPath = `${server.toString()}.well-known/webfinger`;
+        const uri = `${webFingerPath}?resource=acct:${config.user}@${config.host}`;
         const response = await _WebFinger.http.get(uri);
         const body = await response.readBody();
         const actor = JSON.parse(body);
@@ -85479,42 +85480,57 @@ var require_ActivityPubTrigger = __commonJS({
     var html_to_text_1 = require_html_to_text();
     var core = __importStar2(require_core());
     var defaultCutoff = 30;
+    var defaultProtocol = "https";
     var directRepliesOnlyFor = (actor) => (activity) => !activity.object.inReplyTo || activity.object.inReplyTo.startsWith(actor.self) && !activity.replies.some((reply) => reply.object.inReplyTo && !reply.object.inReplyTo.startsWith(actor.self));
     var ActivityPubTrigger = class {
       config;
       constructor(config) {
         this.config = config;
       }
+      isLocalHost() {
+        if (this.config.host) {
+          return this.config.host.startsWith("localhost") || this.config.host.startsWith("127.0.0.1");
+        }
+        return false;
+      }
       async run() {
         if (this.config.host && this.config.user) {
-          const account = await WebFinger_1.WebFinger.discover(this.config.host, this.config.user);
-          core.info(`\u{1F52B} retrieving activitypub notes for @${this.config.user}@${this.config.host}`);
-          const actor = await ActivityPub_1.ActivityPub.forAccount(account);
-          const cutoffPeriod = this.config.cutoff ? this.config.cutoff : defaultCutoff;
-          if (actor) {
-            const activities = await ActivityPub_1.ActivityPub.activitiesFor(actor);
-            const cutoff = new Date(Date.now());
-            const adjustment = cutoff.getMinutes() - cutoffPeriod;
-            cutoff.setMinutes(adjustment);
-            const notes = activities.filter((activity) => activity.type == "Create").filter((activity) => activity.object.type == "Note").filter((activity) => activity.published > cutoff).filter(directRepliesOnlyFor(actor));
-            const posts = notes.map(async (activity) => {
-              const text = (0, html_to_text_1.htmlToText)(activity.object.content, {
-                wordwrap: false,
-                tags: {
-                  a: {
-                    options: {
-                      hideLinkHrefIfSameAsText: true
+          const protocol = this.isLocalHost() ? "http" : defaultProtocol;
+          const serverUrl = new URL(`${protocol}://${this.config.host}`);
+          const account = await WebFinger_1.WebFinger.discover(serverUrl, this.config);
+          if (account) {
+            const actor = await ActivityPub_1.ActivityPub.forAccount(account);
+            core.info(`\u{1F52B} retrieving activitypub notes for @${this.config.user}@${this.config.host}`);
+            if (actor) {
+              const activities = await ActivityPub_1.ActivityPub.activitiesFor(actor);
+              const cutoffPeriod = this.config.cutoff ? this.config.cutoff : defaultCutoff;
+              const cutoff = new Date(Date.now());
+              const adjustment = cutoff.getMinutes() - cutoffPeriod;
+              cutoff.setMinutes(adjustment);
+              const notes = activities.filter((activity) => activity.type == "Create").filter((activity) => activity.object.type == "Note").filter((activity) => activity.published > cutoff).filter(directRepliesOnlyFor(actor));
+              const posts = notes.map(async (activity) => {
+                const text = (0, html_to_text_1.htmlToText)(activity.object.content, {
+                  wordwrap: false,
+                  tags: {
+                    a: {
+                      options: {
+                        hideLinkHrefIfSameAsText: true
+                      }
                     }
                   }
+                });
+                const item = activity.object;
+                if (activity.object.attachment) {
+                  await Media_1.Media.cache(activity.id, activity.object.attachment.map((media) => media.url));
                 }
+                return new Post_1.Post(activity.id, text, item.inReplyTo, activity.object.attachment && activity.object.attachment.length > 0 ? activity.id : void 0);
               });
-              const item = activity.object;
-              await Media_1.Media.cache(activity.id, activity.object.attachment.map((media) => media.url));
-              return new Post_1.Post(activity.id, text, item.inReplyTo, activity.object.attachment.length > 0 ? activity.id : void 0);
-            });
-            return Promise.all(posts);
+              return Promise.all(posts);
+            } else {
+              throw new Error(`No user found for [@${this.config.user}@${this.config.host}]`);
+            }
           } else {
-            throw new Error(`No user found for [@${this.config.user}@${this.config.host}]`);
+            throw new Error(`No user found for @${this.config.user}@${this.config.host}`);
           }
         } else {
           throw new Error(`Required config for user [${this.config.user}] or host [${this.config.host}] missing`);
@@ -85618,7 +85634,7 @@ var require_package = __commonJS({
   "lib/package.json"(exports2, module2) {
     module2.exports = {
       name: "actionslow-action",
-      version: "1.2.2",
+      version: "1.2.3",
       description: "Action to trigger Actionslaw workflows",
       main: "dist/main.js",
       author: "Ric Wood <ric@grislyeye.com>",
@@ -85626,9 +85642,10 @@ var require_package = __commonJS({
         build: "npm run clean && tsc && npm run pack",
         clean: "rimraf lib",
         start: "node --env-file=.env dist/main.js",
-        test: "npm run lint",
+        test: "npm run test:jest && npm run lint",
+        "test:jest": "jest",
         pack: "esbuild lib/src/main.js --outfile=dist/main.js  --bundle --platform=node --target=node20",
-        lint: "trunk init --ci && trunk check"
+        lint: "trunk check"
       },
       devDependencies: {
         "@actions/cache": "^3.2.2",
@@ -85637,12 +85654,18 @@ var require_package = __commonJS({
         "@tsconfig/node20": "^20.1.2",
         "@types/fs-extra": "^11.0.4",
         "@types/html-to-text": "^9.0.4",
+        "@types/jest": "^29.5.11",
         "@types/node": "^20.10.5",
+        "activitypub-starter-kit.rg-wood": "^1.0.0-rc1",
         esbuild: "^0.19.10",
         "html-to-text": "^9.0.5",
+        jest: "^29.7.0",
+        megalodon: "^9.1.2",
         "resolve-cwd": "^3.0.0",
         rimraf: "^5.0.5",
         "rss-parser": "^3.13.0",
+        "ts-jest": "^29.1.1",
+        tsx: "^4.7.0",
         "typed-rest-client": "^1.8.11"
       }
     };

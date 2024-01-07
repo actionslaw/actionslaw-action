@@ -1,7 +1,7 @@
 import { Item, Trigger } from "./Trigger";
 import { TriggerConfig } from "./TriggerConfig";
 
-interface MockConfig {
+export interface MockConfig extends TriggerConfig {
   readonly repititions?: number;
   readonly payload?: Item;
 }
@@ -9,9 +9,9 @@ interface MockConfig {
 export class MockTrigger extends Trigger {
   private readonly config: MockConfig;
 
-  constructor(config: TriggerConfig) {
+  constructor(config: MockConfig) {
     super();
-    this.config = config as MockConfig;
+    this.config = config;
   }
 
   async run(): Promise<Item[]> {
