@@ -96,7 +96,9 @@ describe("ActivityPub", () => {
 
     const posts = await trigger.run();
 
-    expect(posts.find((p) => p.replyto === post.contents.object.inReplyTo));
+    expect(
+      posts.find((p) => p.replyto === post.contents.object.inReplyTo),
+    ).toBeTruthy();
   });
 
   test("ignore indirect ActivityPub replies", async () => {
