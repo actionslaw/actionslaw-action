@@ -120,6 +120,22 @@ describe("ActivityPub", () => {
 
     expect(!posts.find((post) => post.message === uuid2)).toBeTruthy();
   });
+
+  test("ignore ActivityPub reply to reply to indirect reply", async () => {
+    const uuid1 = crypto.randomUUID();
+    const indirectReply = await createPost(
+      uuid1,
+      `https://example.org/test/${uuid1}`,
+    );
+    const uuid2 = crypto.randomUUID();
+    const reply = await createPost(uuid2, indirectReply.contents.object.id);
+    const uuid3 = crypto.randomUUID();
+    await createPost(uuid3, reply.contents.object.id,);
+
+    const posts = await trigger.run();
+
+    expect(!posts.find((post) => post.message === uuid3)).toBeTruthy();
+  });
 });
 
 afterAll(() => {
