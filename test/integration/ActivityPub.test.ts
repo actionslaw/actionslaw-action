@@ -3,28 +3,14 @@ import * as crypto from "crypto";
 import { ActivityPubApp } from "activitypub-starter-kit.rg-wood";
 import { ActivityPubTrigger } from "../../src/triggers/activitypub/ActivityPubTrigger";
 
-const user = "test";
-const hostname = "localhost";
-const port = "8000";
-const host = `${hostname}:${port}`;
-
-const app = new ActivityPubApp(
-  user,
-  "http",
-  host,
-  port,
-  "./database.sqlite3",
-  "./node_modules/activitypub-starter-kit.rg-wood/db/schema.sql",
-  "",
-  "",
-);
+const app = ActivityPubApp.testApp();
 
 app.start();
 
 const trigger = new ActivityPubTrigger({
-  host: host,
-  user: user,
-  protocol: "http",
+  host: app.host,
+  user: app.account,
+  protocol: app.protocol,
 });
 
 interface TestObject {
@@ -60,7 +46,7 @@ async function createPost(message: string, reply?: string): Promise<TestPost> {
 
   const body = reply ? replyTo(reply, message) : post;
 
-  const response = await fetch(`http://${host}/admin/create`, {
+  const response = await fetch(`http://${app.host}/admin/create`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
