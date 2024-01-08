@@ -85656,7 +85656,7 @@ var require_package = __commonJS({
         "@types/html-to-text": "^9.0.4",
         "@types/jest": "^29.5.11",
         "@types/node": "^20.10.5",
-        "activitypub-starter-kit.rg-wood": "^1.0.0-rc1",
+        "activitypub-starter-kit.rg-wood": "^1.0.0-rc3",
         esbuild: "^0.19.10",
         "html-to-text": "^9.0.5",
         jest: "^29.7.0",
