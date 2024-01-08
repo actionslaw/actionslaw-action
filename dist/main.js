@@ -85494,47 +85494,44 @@ var require_ActivityPubTrigger = __commonJS({
         return false;
       }
       async run() {
-        if (this.config.host && this.config.user) {
-          const protocol = this.isLocalHost() ? "http" : defaultProtocol;
-          const serverUrl = new URL(`${protocol}://${this.config.host}`);
-          const account = await WebFinger_1.WebFinger.discover(serverUrl, this.config);
-          if (account) {
-            const actor = await ActivityPub_1.ActivityPub.forAccount(account);
-            core.info(`\u{1F52B} retrieving activitypub notes for @${this.config.user}@${this.config.host}`);
-            if (actor) {
-              const activities = await ActivityPub_1.ActivityPub.activitiesFor(actor);
-              const cutoffPeriod = this.config.cutoff ? this.config.cutoff : defaultCutoff;
-              const cutoff = new Date(Date.now());
-              const adjustment = cutoff.getMinutes() - cutoffPeriod;
-              cutoff.setMinutes(adjustment);
-              const notes = activities.filter((activity) => activity.type == "Create").filter((activity) => activity.object.type == "Note").filter((activity) => activity.published > cutoff).filter(directRepliesOnlyFor(actor));
-              const posts = notes.map(async (activity) => {
-                const text = (0, html_to_text_1.htmlToText)(activity.object.content, {
-                  wordwrap: false,
-                  tags: {
-                    a: {
-                      options: {
-                        hideLinkHrefIfSameAsText: true
-                      }
-                    }
-                  }
-                });
-                const item = activity.object;
-                if (activity.object.attachment) {
-                  await Media_1.Media.cache(activity.id, activity.object.attachment.map((media) => media.url));
-                }
-                return new Post_1.Post(activity.id, text, item.inReplyTo, activity.object.attachment && activity.object.attachment.length > 0 ? activity.id : void 0);
-              });
-              return Promise.all(posts);
-            } else {
-              throw new Error(`No user found for [@${this.config.user}@${this.config.host}]`);
-            }
-          } else {
-            throw new Error(`No user found for @${this.config.user}@${this.config.host}`);
-          }
-        } else {
+        if (!this.config.host || !this.config.user) {
           throw new Error(`Required config for user [${this.config.user}] or host [${this.config.host}] missing`);
         }
+        const protocol = this.isLocalHost() ? "http" : defaultProtocol;
+        const serverUrl = new URL(`${protocol}://${this.config.host}`);
+        const account = await WebFinger_1.WebFinger.discover(serverUrl, this.config);
+        if (!account) {
+          throw new Error(`No user found for @${this.config.user}@${this.config.host}`);
+        }
+        const actor = await ActivityPub_1.ActivityPub.forAccount(account);
+        core.info(`\u{1F52B} retrieving activitypub notes for @${this.config.user}@${this.config.host}`);
+        if (!actor) {
+          throw new Error(`No user found for [@${this.config.user}@${this.config.host}]`);
+        }
+        const activities = await ActivityPub_1.ActivityPub.activitiesFor(actor);
+        const cutoffPeriod = this.config.cutoff ? this.config.cutoff : defaultCutoff;
+        const cutoff = new Date(Date.now());
+        const adjustment = cutoff.getMinutes() - cutoffPeriod;
+        cutoff.setMinutes(adjustment);
+        const notes = activities.filter((activity) => activity.type == "Create").filter((activity) => activity.object.type == "Note").filter((activity) => activity.published > cutoff).filter(directRepliesOnlyFor(actor));
+        const posts = notes.map(async (activity) => {
+          const text = (0, html_to_text_1.htmlToText)(activity.object.content, {
+            wordwrap: false,
+            tags: {
+              a: {
+                options: {
+                  hideLinkHrefIfSameAsText: true
+                }
+              }
+            }
+          });
+          const item = activity.object;
+          if (activity.object.attachment) {
+            await Media_1.Media.cache(activity.id, activity.object.attachment.map((media) => media.url));
+          }
+          return new Post_1.Post(activity.id, text, item.inReplyTo, activity.object.attachment && activity.object.attachment.length > 0 ? activity.id : void 0);
+        });
+        return Promise.all(posts);
       }
     };
     exports2.ActivityPubTrigger = ActivityPubTrigger;

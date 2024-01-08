@@ -130,7 +130,7 @@ describe("ActivityPub", () => {
     const uuid2 = crypto.randomUUID();
     const reply = await createPost(uuid2, indirectReply.contents.object.id);
     const uuid3 = crypto.randomUUID();
-    await createPost(uuid3, reply.contents.object.id,);
+    await createPost(uuid3, reply.contents.object.id);
 
     const posts = await trigger.run();
 
