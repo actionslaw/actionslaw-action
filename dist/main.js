@@ -85487,17 +85487,11 @@ var require_ActivityPubTrigger = __commonJS({
       constructor(config) {
         this.config = config;
       }
-      isLocalHost() {
-        if (this.config.host) {
-          return this.config.host.startsWith("localhost") || this.config.host.startsWith("127.0.0.1");
-        }
-        return false;
-      }
       async run() {
         if (!this.config.host || !this.config.user) {
           throw new Error(`Required config for user [${this.config.user}] or host [${this.config.host}] missing`);
         }
-        const protocol = this.isLocalHost() ? "http" : defaultProtocol;
+        const protocol = this.config.protocol ? this.config.protocol : defaultProtocol;
         const serverUrl = new URL(`${protocol}://${this.config.host}`);
         const account = await WebFinger_1.WebFinger.discover(serverUrl, this.config);
         if (!account) {

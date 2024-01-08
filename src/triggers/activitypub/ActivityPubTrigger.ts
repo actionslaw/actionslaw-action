@@ -13,6 +13,7 @@ export interface ActivityPubConfig extends TriggerConfig {
   readonly host?: string;
   readonly user?: string;
   readonly cutoff?: number;
+  readonly protocol?: string;
 }
 
 type Minutes = number;
@@ -36,16 +37,6 @@ export class ActivityPubTrigger implements Trigger {
     this.config = config;
   }
 
-  private isLocalHost(): boolean {
-    if (this.config.host) {
-      return (
-        this.config.host.startsWith("localhost") ||
-        this.config.host.startsWith("127.0.0.1")
-      );
-    }
-    return false;
-  }
-
   async run(): Promise<Post[]> {
     if (!this.config.host || !this.config.user) {
       throw new Error(
@@ -53,7 +44,10 @@ export class ActivityPubTrigger implements Trigger {
       );
     }
 
-    const protocol = this.isLocalHost() ? "http" : defaultProtocol;
+    const protocol = this.config.protocol
+      ? this.config.protocol
+      : defaultProtocol;
+
     const serverUrl = new URL(`${protocol}://${this.config.host}`);
 
     const account = await WebFinger.discover(serverUrl, this.config);

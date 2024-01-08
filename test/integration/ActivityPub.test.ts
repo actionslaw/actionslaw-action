@@ -24,6 +24,7 @@ app.start();
 const trigger = new ActivityPubTrigger({
   host: host,
   user: user,
+  protocol: "http",
 });
 
 interface TestObject {
