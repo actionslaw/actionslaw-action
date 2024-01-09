@@ -9,7 +9,9 @@
     "clean": "rimraf lib",
     "start": "node --env-file=.env dist/main.js",
     "test": "npm run test:jest && npm run lint",
-    "test:jest": "jest",
+    "test:jest": "npm run build && jest",
+    "test:int": "jest test/integration",
+    "test:e2e": "npm run build && jest test/e2e",
     "pack": "esbuild lib/src/main.js --outfile=dist/main.js  --bundle --platform=node --target=node20",
     "lint": "trunk check"
   },
