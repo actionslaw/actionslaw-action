@@ -85514,7 +85514,7 @@ var require_ActivityPubTrigger = __commonJS({
             tags: {
               a: {
                 options: {
-                  hideLinkHrefIfSameAsText: true
+                  ignoreHref: true
                 }
               }
             }

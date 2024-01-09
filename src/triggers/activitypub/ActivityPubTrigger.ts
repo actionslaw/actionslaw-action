@@ -92,7 +92,7 @@ export class ActivityPubTrigger implements Trigger {
         tags: {
           a: {
             options: {
-              hideLinkHrefIfSameAsText: true,
+              ignoreHref: true,
             },
           },
         },

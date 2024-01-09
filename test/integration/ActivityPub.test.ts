@@ -16,7 +16,7 @@ const trigger = new ActivityPubTrigger({
 
 const testClient = new ActivityPubTestClient(`${app.protocol}://${app.host}`);
 
-describe("ActivityPub", () => {
+describe("ActivityPub should", () => {
   test("read ActivityPub posts", async () => {
     const uuid = crypto.randomUUID();
     await testClient.createPost(`<p>${uuid}</p>`);
@@ -89,6 +89,16 @@ describe("ActivityPub", () => {
     const posts = await trigger.run();
 
     expect(!posts.find((post) => post.message === uuid3)).toBeTruthy();
+  });
+
+  test("ignore tag links", async () => {
+    const uuid = crypto.randomUUID();
+    await testClient.createPost(
+      `<p><a href="https://example.org/tags/${uuid}" class="mention hashtag" rel="tag">#<span>${uuid}</span></a></p>`,
+    );
+    const posts = await trigger.run();
+
+    expect(posts.find((post) => post.message === `#${uuid}`)).toBeTruthy();
   });
 });
 
