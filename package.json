@@ -6,7 +6,7 @@
   "author": "Ric Wood <ric@grislyeye.com>",
   "scripts": {
     "build": "npm run clean && tsc && npm run pack",
-    "clean": "rimraf lib",
+    "clean": "rimraf lib && rimraf database.sqlite3",
     "start": "node --env-file=.env dist/main.js",
     "test": "npm run test:jest && npm run lint",
     "test:jest": "npm run build && jest",
