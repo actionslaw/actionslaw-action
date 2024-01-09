@@ -28,7 +28,7 @@ describe("Actionslaw action should", () => {
       },
     });
 
-    const output = await promisify(exec)(`node dist/main.js`, {
+    const output = await promisify(exec)(`${process.execPath} dist/main.js`, {
       env: {
         INPUT_ON: config,
         INPUT_CACHE: "false",
