@@ -1,6 +1,7 @@
 import { describe, expect, test } from "@jest/globals";
 import * as crypto from "crypto";
 import { ActivityPubApp } from "activitypub-starter-kit.rg-wood";
+import { ActivityPubTestClient } from "./ActivityPubTestClient";
 import { ActivityPubTrigger } from "../../src/triggers/activitypub/ActivityPubTrigger";
 
 const app = ActivityPubApp.testApp();
@@ -13,53 +14,12 @@ const trigger = new ActivityPubTrigger({
   protocol: app.protocol,
 });
 
-interface TestObject {
-  object: {
-    id?: string;
-    type: string;
-    content: string;
-    inReplyTo?: string;
-  };
-}
-
-interface TestPost {
-  contents: TestObject;
-}
-
-function replyTo(reply: string, message: string): TestObject {
-  return {
-    object: {
-      type: "Note",
-      content: message,
-      inReplyTo: reply,
-    },
-  };
-}
-
-async function createPost(message: string, reply?: string): Promise<TestPost> {
-  const post: TestObject = {
-    object: {
-      type: "Note",
-      content: message,
-    },
-  };
-
-  const body = reply ? replyTo(reply, message) : post;
-
-  const response = await fetch(`http://${app.host}/admin/create`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-
-  const text = await response.text();
-  return JSON.parse(text) as TestPost;
-}
+const testClient = new ActivityPubTestClient(`${app.protocol}://${app.host}`);
 
 describe("ActivityPub", () => {
   test("read ActivityPub posts", async () => {
     const uuid = crypto.randomUUID();
-    await createPost(`<p>${uuid}</p>`);
+    await testClient.createPost(`<p>${uuid}</p>`);
 
     const posts = await trigger.run();
 
@@ -68,7 +28,7 @@ describe("ActivityPub", () => {
 
   test("read ActivityPub posts with URL", async () => {
     const url = `https://example.org/${crypto.randomUUID()}`;
-    await createPost(`<p><a href=${url}>${url}</a></p>`);
+    await testClient.createPost(`<p><a href=${url}>${url}</a></p>`);
 
     const posts = await trigger.run();
 
@@ -77,8 +37,8 @@ describe("ActivityPub", () => {
 
   test("read ActivityPub replies", async () => {
     const uuid = crypto.randomUUID();
-    const post = await createPost("test-post");
-    await createPost(uuid, post.contents.object.id);
+    const post = await testClient.createPost("test-post");
+    await testClient.createPost(uuid, post.contents.object.id);
 
     const posts = await trigger.run();
 
@@ -89,7 +49,7 @@ describe("ActivityPub", () => {
 
   test("ignore indirect ActivityPub replies", async () => {
     const uuid = crypto.randomUUID();
-    await createPost(uuid, `https://example.org/test/${uuid}`);
+    await testClient.createPost(uuid, `https://example.org/test/${uuid}`);
 
     const posts = await trigger.run();
 
@@ -98,12 +58,12 @@ describe("ActivityPub", () => {
 
   test("ignore ActivityPub reply to indirect reply", async () => {
     const uuid1 = crypto.randomUUID();
-    const indirectReply = await createPost(
+    const indirectReply = await testClient.createPost(
       uuid1,
       `https://example.org/test/${uuid1}`,
     );
     const uuid2 = crypto.randomUUID();
-    await createPost(uuid2, indirectReply.contents.object.id);
+    await testClient.createPost(uuid2, indirectReply.contents.object.id);
 
     const posts = await trigger.run();
 
@@ -112,19 +72,19 @@ describe("ActivityPub", () => {
 
   test("ignore ActivityPub reply to reply to indirect reply", async () => {
     const uuid1 = crypto.randomUUID();
-    const indirectReply = await createPost(
+    const indirectReply = await testClient.createPost(
       uuid1,
       `https://example.org/test/${uuid1}`,
     );
 
     const uuid2 = crypto.randomUUID();
-    const indirectReplyReply = await createPost(
+    const indirectReplyReply = await testClient.createPost(
       uuid2,
       indirectReply.contents.object.id,
     );
 
     const uuid3 = crypto.randomUUID();
-    await createPost(uuid3, indirectReplyReply.contents.object.id);
+    await testClient.createPost(uuid3, indirectReplyReply.contents.object.id);
 
     const posts = await trigger.run();
 
