@@ -91,7 +91,7 @@ describe("ActivityPub should", () => {
     expect(!posts.find((post) => post.message === uuid3)).toBeTruthy();
   });
 
-  test("ignore tag links", async () => {
+  test("ignore hashtag links", async () => {
     const uuid = crypto.randomUUID();
     await testClient.createPost(
       `<p><a href="https://example.org/tags/${uuid}" class="mention hashtag" rel="tag">#<span>${uuid}</span></a></p>`,
