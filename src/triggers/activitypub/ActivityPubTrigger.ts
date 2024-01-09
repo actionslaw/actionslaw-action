@@ -14,6 +14,7 @@ export interface ActivityPubConfig extends TriggerConfig {
   readonly user?: string;
   readonly cutoff?: number;
   readonly protocol?: string;
+  readonly removeTrailingHashtags?: boolean;
 }
 
 type Minutes = number;
@@ -97,6 +98,13 @@ export class ActivityPubTrigger implements Trigger {
           },
         },
       });
+
+      const stripHashTags = (t: string) =>
+        t.replaceAll(/(?:\s*[#$][a-z\d-]+)+$/gi, "");
+
+      const filteredText =
+        this.config.removeTrailingHashtags ? stripHashTags(text) : text;
+
       const item = activity.object;
 
       if (activity.object.attachment) {
@@ -108,7 +116,7 @@ export class ActivityPubTrigger implements Trigger {
 
       return new Post(
         activity.id,
-        text,
+        filteredText,
         item.inReplyTo,
         activity.object.attachment && activity.object.attachment!.length > 0
           ? activity.id
