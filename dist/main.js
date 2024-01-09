@@ -25648,6 +25648,7 @@ var require_RssTrigger = __commonJS({
       categories;
       contentSnippet;
       enclosure;
+      published;
       constructor(item) {
         this.link = item.link;
         this.guid = item.guid;
@@ -25659,6 +25660,7 @@ var require_RssTrigger = __commonJS({
         this.categories = item.categories;
         this.contentSnippet = item.contentSnippet;
         this.enclosure = item.enclosure;
+        this.published = item.pubDate ? new Date(Date.parse(item.pubDate)) : /* @__PURE__ */ new Date();
       }
     };
     var RssTrigger = class extends Trigger_1.Trigger {
@@ -25691,11 +25693,13 @@ var require_Post = __commonJS({
       message;
       replyto;
       media;
-      constructor(uri, message, replyto, media) {
+      published;
+      constructor(uri, message, published, replyto, media) {
         this.uri = uri;
         this.message = message;
         this.replyto = replyto;
         this.media = media;
+        this.published = published;
       }
       get key() {
         return this.uri;
@@ -85525,7 +85529,7 @@ var require_ActivityPubTrigger = __commonJS({
           if (activity.object.attachment) {
             await Media_1.Media.cache(activity.id, activity.object.attachment.map((media) => media.url));
           }
-          return new Post_1.Post(activity.id, filteredText, item.inReplyTo, activity.object.attachment && activity.object.attachment.length > 0 ? activity.id : void 0);
+          return new Post_1.Post(activity.id, filteredText, activity.published, item.inReplyTo, activity.object.attachment && activity.object.attachment.length > 0 ? activity.id : void 0);
         });
         return Promise.all(posts);
       }
@@ -85731,7 +85735,7 @@ var require_ActionslawAction = __commonJS({
         const checkCaches = () => Promise.all(allItems.map((item) => TriggerCache_1.TriggerCache.isCached(item.key)));
         const ignoreCache = Array(allItems.length).fill(false);
         const checks = config.cache ? await checkCaches() : ignoreCache;
-        const uncached = checks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item);
+        const uncached = checks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item).sort(byPublishedTimestamp);
         core.info(`\u{1F52B} triggering [${uncached.map((item) => item.key)}]`);
         core.setOutput("items", JSON.stringify(uncached));
         if (config.cache)
@@ -85739,6 +85743,9 @@ var require_ActionslawAction = __commonJS({
       }
     };
     exports2.ActionslawAction = ActionslawAction;
+    function byPublishedTimestamp(a, b) {
+      return a.published < b.published ? -1 : a.published > b.published ? 1 : 0;
+    }
   }
 });
 

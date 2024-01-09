@@ -102,8 +102,9 @@ export class ActivityPubTrigger implements Trigger {
       const stripHashTags = (t: string) =>
         t.replaceAll(/(?:\s*[#$][a-z\d-]+)+$/gi, "");
 
-      const filteredText =
-        this.config.removeTrailingHashtags ? stripHashTags(text) : text;
+      const filteredText = this.config.removeTrailingHashtags
+        ? stripHashTags(text)
+        : text;
 
       const item = activity.object;
 
@@ -117,6 +118,7 @@ export class ActivityPubTrigger implements Trigger {
       return new Post(
         activity.id,
         filteredText,
+        activity.published,
         item.inReplyTo,
         activity.object.attachment && activity.object.attachment!.length > 0
           ? activity.id

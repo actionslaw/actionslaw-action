@@ -20,8 +20,12 @@ function parseActionOutput(output: string): Map<string, string> {
   );
 }
 
+interface Item {
+  published: Date;
+}
+
 describe("Actionslaw action should", () => {
-  test("output ordered lists of items", async () => {
+  test("RSS items", async () => {
     const config = JSON.stringify({
       rss: {
         url: "https://hnrss.org/newest?points=300&count=3",
@@ -36,13 +40,38 @@ describe("Actionslaw action should", () => {
     });
 
     const commands = parseActionOutput(output.stdout);
-    const items = JSON.parse(commands.get("items") || "[]");
+    const items = JSON.parse(commands.get("items") || "[]") as Item[];
 
     expect(items.length).toBe(3);
-    expect(items).toStrictEqual([...items].sort(byIsoDate));
+    expect(items).toStrictEqual([...items].sort(byPublishedTimestamp));
+  });
+
+  test("ActivityPub notes", async () => {
+    const config = JSON.stringify({
+      activitypub: {
+        host: "toot.io",
+        user: "testgrislyeye",
+        cutoff: 1440,
+      },
+    });
+
+    const output = await promisify(exec)(`${process.execPath} dist/main.js`, {
+      env: {
+        INPUT_ON: config,
+        INPUT_CACHE: "false",
+      },
+    });
+
+    console.error(output.stderr);
+    console.log(output.stdout);
+
+    const commands = parseActionOutput(output.stdout);
+    const items = JSON.parse(commands.get("items") || "[]") as Item[];
+
+    expect(items).toStrictEqual([...items].sort(byPublishedTimestamp));
   });
 });
 
-function byIsoDate(a: any, b: any) {
-  return a.isoDate > b.isoDate ? -1 : a.isoDate < b.isoDate ? 1 : 0;
+function byPublishedTimestamp(a: Item, b: Item) {
+  return a.published < b.published ? -1 : a.published > b.published ? 1 : 0;
 }

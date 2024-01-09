@@ -5,12 +5,20 @@ export class Post implements Item {
   message: string;
   replyto?: string;
   media?: String;
+  published: Date;
 
-  constructor(uri: string, message: string, replyto?: string, media?: string) {
+  constructor(
+    uri: string,
+    message: string,
+    published: Date,
+    replyto?: string,
+    media?: string,
+  ) {
     this.uri = uri;
     this.message = message;
     this.replyto = replyto;
     this.media = media;
+    this.published = published;
   }
 
   get key(): Key {

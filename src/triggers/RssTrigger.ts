@@ -27,6 +27,7 @@ class RssItem implements Item, Parser.Item {
   readonly categories?: string[];
   readonly contentSnippet?: string;
   readonly enclosure?: Parser.Enclosure;
+  readonly published: Date;
 
   constructor(item: Parser.Item) {
     this.link = item.link;
@@ -39,6 +40,9 @@ class RssItem implements Item, Parser.Item {
     this.categories = item.categories;
     this.contentSnippet = item.contentSnippet;
     this.enclosure = item.enclosure;
+    this.published = item.pubDate
+      ? new Date(Date.parse(item.pubDate))
+      : new Date();
   }
 }
 

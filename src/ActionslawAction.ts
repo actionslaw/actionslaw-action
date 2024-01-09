@@ -46,7 +46,8 @@ export class ActionslawAction {
     const uncached: Item[] = checks
       .map<[boolean, Item]>((check, i) => [check, allItems[i]])
       .filter(([cached, _]) => !cached)
-      .map<Item>(([_, item]) => item);
+      .map<Item>(([_, item]) => item)
+      .sort(byPublishedTimestamp);
 
     core.info(`🔫 triggering [${uncached.map((item) => item.key)}]`);
 
@@ -54,4 +55,8 @@ export class ActionslawAction {
 
     if (config.cache) await TriggerCache.save(uncached.map((item) => item.key));
   }
+}
+
+function byPublishedTimestamp(a: Item, b: Item) {
+  return a.published < b.published ? -1 : a.published > b.published ? 1 : 0;
 }

@@ -3,6 +3,7 @@ import * as crypto from "crypto";
 import { ActivityPubApp } from "activitypub-starter-kit.rg-wood";
 import { ActivityPubTestClient } from "./ActivityPubTestClient";
 import { ActivityPubTrigger } from "../../src/triggers/activitypub/ActivityPubTrigger";
+import { Post } from "../../src/triggers/activitypub/Post";
 
 const app = ActivityPubApp.testApp();
 
@@ -188,7 +189,27 @@ describe("ActivityPub should", () => {
 
     expect(posts.find((p) => p.message === `1 #${hashtag} 2`)).toBeTruthy();
   });
+
+  test("returns posts in order of published timestamp ascending", async () => {
+    await testClient.createPost(`Post 1`);
+    await testClient.createPost(`Post 2`);
+    await testClient.createPost(`Post 3`);
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+    });
+
+    const posts = await trigger.run();
+
+    expect(posts).toStrictEqual([...posts].sort(byPublishedTimestamp));
+  });
 });
+
+function byPublishedTimestamp(a: Post, b: Post) {
+  return a.published < b.published ? -1 : a.published > b.published ? 1 : 0;
+}
 
 afterAll(() => {
   return app.stop();
