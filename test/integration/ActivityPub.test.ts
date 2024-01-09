@@ -94,7 +94,11 @@ describe("ActivityPub should", () => {
   test("ignore hashtag links", async () => {
     const uuid = crypto.randomUUID();
     await testClient.createPost(
-      `<p><a href="https://example.org/tags/${uuid}" class="mention hashtag" rel="tag">#<span>${uuid}</span></a></p>`,
+      `<p>
+        <a href="https://example.org/tags/${uuid}" class="mention hashtag" rel="tag">
+          #<span>${uuid}</span>
+        </a>
+      </p>`,
     );
     const posts = await trigger.run();
 
