@@ -67,6 +67,7 @@ Configured as follows:
 - `host`, required, hostname of source ActivityPub instance
 - `user`, required, source user account
 - `cutoff`, optional (default `30`), grace period in minutes before which posts are ignored
+- `removeTrailingHashtags`, optional (default `false`), remove trailing hashtags from source messages
 
 #### Outputs
 

@@ -85519,11 +85519,13 @@ var require_ActivityPubTrigger = __commonJS({
               }
             }
           });
+          const stripHashTags = (t) => t.replaceAll(/(?:\s*[#$][a-z\d-]+)+$/gi, "");
+          const filteredText = this.config.removeTrailingHashtags ? stripHashTags(text) : text;
           const item = activity.object;
           if (activity.object.attachment) {
             await Media_1.Media.cache(activity.id, activity.object.attachment.map((media) => media.url));
           }
-          return new Post_1.Post(activity.id, text, item.inReplyTo, activity.object.attachment && activity.object.attachment.length > 0 ? activity.id : void 0);
+          return new Post_1.Post(activity.id, filteredText, item.inReplyTo, activity.object.attachment && activity.object.attachment.length > 0 ? activity.id : void 0);
         });
         return Promise.all(posts);
       }
@@ -85631,7 +85633,7 @@ var require_package = __commonJS({
       author: "Ric Wood <ric@grislyeye.com>",
       scripts: {
         build: "npm run clean && tsc && npm run pack",
-        clean: "rimraf lib",
+        clean: "rimraf lib && rimraf database.sqlite3",
         start: "node --env-file=.env dist/main.js",
         test: "npm run test:jest && npm run lint",
         "test:jest": "npm run build && jest",

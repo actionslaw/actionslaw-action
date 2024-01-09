@@ -8,18 +8,18 @@ const app = ActivityPubApp.testApp();
 
 app.start();
 
-const trigger = new ActivityPubTrigger({
-  host: app.host,
-  user: app.account,
-  protocol: app.protocol,
-});
-
 const testClient = new ActivityPubTestClient(`${app.protocol}://${app.host}`);
 
 describe("ActivityPub should", () => {
   test("read ActivityPub posts", async () => {
     const uuid = crypto.randomUUID();
     await testClient.createPost(`<p>${uuid}</p>`);
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+    });
 
     const posts = await trigger.run();
 
@@ -29,6 +29,12 @@ describe("ActivityPub should", () => {
   test("read ActivityPub posts with URL", async () => {
     const url = `https://example.org/${crypto.randomUUID()}`;
     await testClient.createPost(`<p><a href=${url}>${url}</a></p>`);
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+    });
 
     const posts = await trigger.run();
 
@@ -40,6 +46,12 @@ describe("ActivityPub should", () => {
     const post = await testClient.createPost("test-post");
     await testClient.createPost(uuid, post.contents.object.id);
 
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+    });
+
     const posts = await trigger.run();
 
     expect(
@@ -50,6 +62,12 @@ describe("ActivityPub should", () => {
   test("ignore indirect ActivityPub replies", async () => {
     const uuid = crypto.randomUUID();
     await testClient.createPost(uuid, `https://example.org/test/${uuid}`);
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+    });
 
     const posts = await trigger.run();
 
@@ -64,6 +82,12 @@ describe("ActivityPub should", () => {
     );
     const uuid2 = crypto.randomUUID();
     await testClient.createPost(uuid2, indirectReply.contents.object.id);
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+    });
 
     const posts = await trigger.run();
 
@@ -86,6 +110,12 @@ describe("ActivityPub should", () => {
     const uuid3 = crypto.randomUUID();
     await testClient.createPost(uuid3, indirectReplyReply.contents.object.id);
 
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+    });
+
     const posts = await trigger.run();
 
     expect(!posts.find((post) => post.message === uuid3)).toBeTruthy();
@@ -100,9 +130,63 @@ describe("ActivityPub should", () => {
         </a>
       </p>`,
     );
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+    });
+
     const posts = await trigger.run();
 
     expect(posts.find((post) => post.message === `#${uuid}`)).toBeTruthy();
+  });
+
+  test("strip out trailing hashtags", async () => {
+    const hashtag = crypto.randomBytes(20).toString("hex");
+    await testClient.createPost(
+      `<p>
+        Hashtag test
+        <a href="https://example.org/tags/${hashtag}" class="mention hashtag" rel="tag">
+          #<span>${hashtag}</span>
+        </a>
+      </p>`,
+    );
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+      removeTrailingHashtags: true,
+    });
+
+    const posts = await trigger.run();
+
+    expect(!posts.find((p) => p.message.includes(hashtag))).toBeTruthy();
+  });
+
+  test("retain body hashtags", async () => {
+    const hashtag = crypto.randomBytes(20).toString("hex");
+    await testClient.createPost(
+      `<p>
+        1
+        <a href="https://example.org/tags/${hashtag}" class="mention hashtag" rel="tag">
+          #<span>${hashtag}</span>
+        </a>
+        2
+      </p>`,
+    );
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+      removeTrailingHashtags: true,
+    });
+
+    const posts = await trigger.run();
+
+    expect(posts.find((p) => p.message === `1 #${hashtag} 2`)).toBeTruthy();
   });
 });
 
