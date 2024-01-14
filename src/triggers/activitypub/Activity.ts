@@ -1,5 +1,5 @@
 interface Attachment {
-  url: string;
+  readonly url: string;
 }
 
 export interface Activity {

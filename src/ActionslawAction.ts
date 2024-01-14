@@ -3,6 +3,7 @@ import { Key, Item } from "./triggers/Trigger";
 import { TriggerKey, Triggers } from "./triggers/Triggers";
 import { TriggerCache } from "./TriggerCache";
 import { TriggerConfig } from "./triggers/TriggerConfig";
+import { Media } from "./Media";
 import project from "../package.json";
 
 interface Config {
@@ -48,6 +49,10 @@ export class ActionslawAction {
       .filter(([cached, _]) => !cached)
       .map<Item>(([_, item]) => item)
       .sort(byPublishedTimestamp);
+
+    uncached.forEach(async (item: Item) => {
+      if (item.downloads) await Media.cache(item.key, item.downloads);
+    });
 
     core.info(`🔫 triggering [${uncached.map((item) => item.key)}]`);
 

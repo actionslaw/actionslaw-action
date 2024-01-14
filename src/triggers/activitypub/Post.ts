@@ -1,23 +1,23 @@
 import { Item, Key } from "../Trigger";
 
 export class Post implements Item {
-  uri: string;
-  message: string;
-  replyto?: string;
-  media?: String;
-  published: Date;
+  readonly uri: string;
+  readonly message: string;
+  readonly replyto?: string;
+  readonly download?: string[];
+  readonly published: Date;
 
   constructor(
     uri: string,
     message: string,
     published: Date,
     replyto?: string,
-    media?: string,
+    download?: string[],
   ) {
     this.uri = uri;
     this.message = message;
     this.replyto = replyto;
-    this.media = media;
+    this.download = download;
     this.published = published;
   }
 

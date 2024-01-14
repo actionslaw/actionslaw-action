@@ -1,11 +1,10 @@
-import { Item, Trigger } from "../Trigger";
+import { Trigger } from "../Trigger";
 import { TriggerConfig } from "../TriggerConfig";
 import { Post } from "./Post";
 import { Activity } from "./Activity";
 import { ActivityPub } from "./ActivityPub";
 import { Actor } from "./Actor";
 import { WebFinger } from "./WebFinger";
-import { Media } from "../Media";
 import { htmlToText } from "html-to-text";
 import * as core from "@actions/core";
 
@@ -108,21 +107,16 @@ export class ActivityPubTrigger implements Trigger {
 
       const item = activity.object;
 
-      if (activity.object.attachment) {
-        await Media.cache(
-          activity.id,
-          activity.object.attachment.map((media) => media.url),
-        );
-      }
+      const media = activity.object.attachment
+        ? activity.object.attachment.map((a) => a.url)
+        : [];
 
       return new Post(
         activity.id,
         filteredText,
         activity.published,
         item.inReplyTo,
-        activity.object.attachment && activity.object.attachment!.length > 0
-          ? activity.id
-          : undefined,
+        media,
       );
     });
 

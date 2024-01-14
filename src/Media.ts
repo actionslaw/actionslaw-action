@@ -6,7 +6,7 @@ import { URL } from "url";
 import * as cache from "@actions/cache";
 
 export class Media {
-  static folder: string = "./media";
+  static folder: string = path.resolve(`./media`);
 
   private static async download(urls: string[]): Promise<void[]> {
     return Promise.all(
@@ -16,7 +16,7 @@ export class Media {
           const media = await fetch(mediaUrl);
           if (!fs.existsSync(Media.folder)) fs.mkdirSync(Media.folder);
           const fileName = path.basename(mediaUrl.pathname);
-          const destination = path.resolve(`./${Media.folder}`, fileName);
+          const destination = path.resolve(Media.folder, fileName);
           const fileStream = fs.createWriteStream(destination, { flags: "w" });
           if (media.body) {
             await finished(Readable.fromWeb(media.body).pipe(fileStream));

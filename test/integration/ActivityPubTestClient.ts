@@ -1,24 +1,20 @@
 interface TestObject {
   object: {
-    id?: string;
-    type: string;
-    content: string;
-    inReplyTo?: string;
+    readonly id?: string;
+    readonly type: string;
+    readonly content: string;
+    readonly inReplyTo?: string;
+    readonly attachment?: [{ readonly url: string }];
   };
 }
 
 interface TestPost {
-  contents: TestObject;
+  readonly contents: TestObject;
 }
 
-function replyTo(reply: string, message: string): TestObject {
-  return {
-    object: {
-      type: "Note",
-      content: message,
-      inReplyTo: reply,
-    },
-  };
+interface CreatPostOptions {
+  readonly reply?: string;
+  readonly attachment?: string;
 }
 
 export class ActivityPubTestClient {
@@ -28,7 +24,22 @@ export class ActivityPubTestClient {
     this.endpoint = endpoint;
   }
 
-  async createPost(message: string, reply?: string): Promise<TestPost> {
+  async createPost(
+    message: string,
+    options?: CreatPostOptions,
+  ): Promise<TestPost> {
+    function replyTo(reply: string, post: TestObject): TestObject {
+      const object = Object.assign(post.object, { inReplyTo: reply });
+      return { object: object };
+    }
+
+    function attachment(attachment: string, post: TestObject): TestObject {
+      const object = Object.assign(post.object, {
+        attachment: [{ url: attachment }],
+      });
+      return { object: object };
+    }
+
     const post: TestObject = {
       object: {
         type: "Note",
@@ -36,12 +47,18 @@ export class ActivityPubTestClient {
       },
     };
 
-    const body = reply ? replyTo(reply, message) : post;
+    const postWithReply =
+      options && options.reply ? replyTo(options.reply, post) : post;
+
+    const postWithReplyWithAttachment =
+      options && options.attachment
+        ? attachment(options.attachment, postWithReply)
+        : postWithReply;
 
     const response = await fetch(`${this.endpoint}/admin/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify(postWithReplyWithAttachment),
     });
 
     const text = await response.text();

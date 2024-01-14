@@ -45,7 +45,7 @@ describe("ActivityPub should", () => {
   test("read ActivityPub replies", async () => {
     const uuid = crypto.randomUUID();
     const post = await testClient.createPost("test-post");
-    await testClient.createPost(uuid, post.contents.object.id);
+    await testClient.createPost(uuid, { reply: post.contents.object.id });
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
@@ -62,7 +62,9 @@ describe("ActivityPub should", () => {
 
   test("ignore indirect ActivityPub replies", async () => {
     const uuid = crypto.randomUUID();
-    await testClient.createPost(uuid, `https://example.org/test/${uuid}`);
+    await testClient.createPost(uuid, {
+      reply: `https://example.org/test/${uuid}`,
+    });
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
@@ -77,12 +79,13 @@ describe("ActivityPub should", () => {
 
   test("ignore ActivityPub reply to indirect reply", async () => {
     const uuid1 = crypto.randomUUID();
-    const indirectReply = await testClient.createPost(
-      uuid1,
-      `https://example.org/test/${uuid1}`,
-    );
+    const indirectReply = await testClient.createPost(uuid1, {
+      reply: `https://example.org/test/${uuid1}`,
+    });
     const uuid2 = crypto.randomUUID();
-    await testClient.createPost(uuid2, indirectReply.contents.object.id);
+    await testClient.createPost(uuid2, {
+      reply: indirectReply.contents.object.id,
+    });
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
@@ -97,19 +100,19 @@ describe("ActivityPub should", () => {
 
   test("ignore ActivityPub reply to reply to indirect reply", async () => {
     const uuid1 = crypto.randomUUID();
-    const indirectReply = await testClient.createPost(
-      uuid1,
-      `https://example.org/test/${uuid1}`,
-    );
+    const indirectReply = await testClient.createPost(uuid1, {
+      reply: `https://example.org/test/${uuid1}`,
+    });
 
     const uuid2 = crypto.randomUUID();
-    const indirectReplyReply = await testClient.createPost(
-      uuid2,
-      indirectReply.contents.object.id,
-    );
+    const indirectReplyReply = await testClient.createPost(uuid2, {
+      reply: indirectReply.contents.object.id,
+    });
 
     const uuid3 = crypto.randomUUID();
-    await testClient.createPost(uuid3, indirectReplyReply.contents.object.id);
+    await testClient.createPost(uuid3, {
+      reply: indirectReplyReply.contents.object.id,
+    });
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
@@ -205,6 +208,24 @@ describe("ActivityPub should", () => {
 
     expect(posts).toStrictEqual([...posts].sort(byPublishedTimestamp));
   });
+
+  test("downloads attachments", async () => {
+    const uuid = crypto.randomUUID();
+    const attachment = `http://localhost:8080/${uuid}.txt`;
+    await testClient.createPost(uuid, {
+      attachment: attachment,
+    });
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      user: app.account,
+      protocol: app.protocol,
+    });
+
+    const posts = await trigger.run();
+
+    expect(posts.find((p) => p.download!.includes(attachment))).toBeTruthy();
+  });
 });
 
 function byPublishedTimestamp(a: Post, b: Post) {
@@ -212,5 +233,5 @@ function byPublishedTimestamp(a: Post, b: Post) {
 }
 
 afterAll(() => {
-  return app.stop();
+  app.stop();
 });
