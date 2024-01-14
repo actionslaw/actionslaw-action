@@ -85615,6 +85615,7 @@ var require_Media = __commonJS({
           const files = await _Media.download(urls);
           core.info(`\u{1F52B} caching media ${files} for key ${key}`);
           await cache.saveCache([`${_Media.folder}/**`], key);
+          fs.rmSync(_Media.folder, { recursive: true, force: true });
         }
       }
     };
@@ -85627,7 +85628,7 @@ var require_package = __commonJS({
   "lib/package.json"(exports2, module2) {
     module2.exports = {
       name: "actionslow-action",
-      version: "1.2.7",
+      version: "1.2.8",
       description: "Action to trigger Actionslaw workflows",
       main: "dist/main.js",
       author: "Ric Wood <ric@grislyeye.com>",
@@ -85733,12 +85734,7 @@ var require_ActionslawAction = __commonJS({
         const ignoreCache = Array(allItems.length).fill(false);
         const checks = config.cache ? await checkCaches() : ignoreCache;
         const uncached = checks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item).sort(byPublishedTimestamp);
-        if (config.cache) {
-          uncached.forEach(async (item) => {
-            if (item.media)
-              await Media_1.Media.cache(item.key, item.media);
-          });
-        }
+        await Promise.all(uncached.map(async (item) => config.cache && item.media ? await Media_1.Media.cache(item.key, item.media) : []));
         core.info(`\u{1F52B} triggering [${uncached.map((item) => item.key)}]`);
         core.setOutput("items", JSON.stringify(uncached));
         if (config.cache)

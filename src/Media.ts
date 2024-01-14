@@ -32,6 +32,7 @@ export class Media {
       const files = await Media.download(urls);
       core.info(`🔫 caching media ${files} for key ${key}`);
       await cache.saveCache([`${Media.folder}/**`], key);
+      fs.rmSync(Media.folder, { recursive: true, force: true });
     }
   }
 }

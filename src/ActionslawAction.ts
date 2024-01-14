@@ -50,11 +50,13 @@ export class ActionslawAction {
       .map<Item>(([_, item]) => item)
       .sort(byPublishedTimestamp);
 
-    if (config.cache) {
-      uncached.forEach(async (item: Item) => {
-        if (item.media) await Media.cache(item.key, item.media);
-      });
-    }
+    await Promise.all(
+      uncached.map(async (item) =>
+        config.cache && item.media
+          ? await Media.cache(item.key, item.media)
+          : [],
+      ),
+    );
 
     core.info(`🔫 triggering [${uncached.map((item) => item.key)}]`);
 
