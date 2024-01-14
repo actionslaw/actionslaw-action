@@ -85607,13 +85607,14 @@ var require_Media = __commonJS({
           if (media.body) {
             await (0, promises_1.finished)(stream_1.Readable.fromWeb(media.body).pipe(fileStream));
           }
+          return destination;
         }));
       }
       static async cache(key, urls) {
-        core.info(`\u{1F52B} caching media ${urls} for ke ${key}`);
         if (urls.length > 0) {
-          await _Media.download(urls);
-          await cache.saveCache([`${_Media.folder}/**`], key);
+          const files = await _Media.download(urls);
+          core.info(`\u{1F52B} caching media ${files} for key ${key}`);
+          await cache.saveCache(files, key);
         }
       }
     };

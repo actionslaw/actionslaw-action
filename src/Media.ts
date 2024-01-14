@@ -9,7 +9,7 @@ import * as core from "@actions/core";
 export class Media {
   static folder: string = path.resolve(`./media`);
 
-  private static async download(urls: string[]): Promise<void[]> {
+  private static async download(urls: string[]): Promise<string[]> {
     return Promise.all(
       urls
         .map((url) => new URL(url))
@@ -22,15 +22,16 @@ export class Media {
           if (media.body) {
             await finished(Readable.fromWeb(media.body).pipe(fileStream));
           }
+          return destination;
         }),
     );
   }
 
   static async cache(key: string, urls: string[]): Promise<void> {
-    core.info(`🔫 caching media ${urls} for ke ${key}`);
     if (urls.length > 0) {
-      await Media.download(urls);
-      await cache.saveCache([`${Media.folder}/**`], key);
+      const files = await Media.download(urls);
+      core.info(`🔫 caching media ${files} for key ${key}`);
+      await cache.saveCache(files, key);
     }
   }
 }
