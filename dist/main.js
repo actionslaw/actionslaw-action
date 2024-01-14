@@ -25692,13 +25692,13 @@ var require_Post = __commonJS({
       uri;
       message;
       replyto;
-      download;
+      downloads;
       published;
-      constructor(uri, message, published, replyto, download) {
+      constructor(uri, message, published, replyto, downloads) {
         this.uri = uri;
         this.message = message;
         this.replyto = replyto;
-        this.download = download;
+        this.downloads = downloads;
         this.published = published;
       }
       get key() {
@@ -85593,6 +85593,7 @@ var require_Media = __commonJS({
     var path = __importStar2(require("path"));
     var url_1 = require("url");
     var cache = __importStar2(require_cache2());
+    var core = __importStar2(require_core());
     var Media = class _Media {
       static folder = path.resolve(`./media`);
       static async download(urls) {
@@ -85609,6 +85610,7 @@ var require_Media = __commonJS({
         }));
       }
       static async cache(key, urls) {
+        core.info(`\u{1F52B} caching media ${urls} for ke ${key}`);
         if (urls.length > 0) {
           await _Media.download(urls);
           await cache.saveCache([`${_Media.folder}/**`], key);
@@ -85730,10 +85732,12 @@ var require_ActionslawAction = __commonJS({
         const ignoreCache = Array(allItems.length).fill(false);
         const checks = config.cache ? await checkCaches() : ignoreCache;
         const uncached = checks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item).sort(byPublishedTimestamp);
-        uncached.forEach(async (item) => {
-          if (item.downloads)
-            await Media_1.Media.cache(item.key, item.downloads);
-        });
+        if (config.cache) {
+          uncached.forEach(async (item) => {
+            if (item.downloads)
+              await Media_1.Media.cache(item.key, item.downloads);
+          });
+        }
         core.info(`\u{1F52B} triggering [${uncached.map((item) => item.key)}]`);
         core.setOutput("items", JSON.stringify(uncached));
         if (config.cache)

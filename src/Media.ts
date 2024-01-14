@@ -4,6 +4,7 @@ import { finished } from "stream/promises";
 import * as path from "path";
 import { URL } from "url";
 import * as cache from "@actions/cache";
+import * as core from "@actions/core";
 
 export class Media {
   static folder: string = path.resolve(`./media`);
@@ -26,6 +27,7 @@ export class Media {
   }
 
   static async cache(key: string, urls: string[]): Promise<void> {
+    core.info(`🔫 caching media ${urls} for ke ${key}`);
     if (urls.length > 0) {
       await Media.download(urls);
       await cache.saveCache([`${Media.folder}/**`], key);

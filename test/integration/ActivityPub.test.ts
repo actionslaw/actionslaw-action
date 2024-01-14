@@ -224,7 +224,7 @@ describe("ActivityPub should", () => {
 
     const posts = await trigger.run();
 
-    expect(posts.find((p) => p.download!.includes(attachment))).toBeTruthy();
+    expect(posts.find((p) => p.downloads!.includes(attachment))).toBeTruthy();
   });
 });
 

@@ -1,6 +1,6 @@
 {
   "name": "actionslow-action",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Action to trigger Actionslaw workflows",
   "main": "dist/main.js",
   "author": "Ric Wood <ric@grislyeye.com>",
