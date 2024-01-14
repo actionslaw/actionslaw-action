@@ -39887,18 +39887,18 @@ var require_constants5 = __commonJS({
     (function(CacheFilename2) {
       CacheFilename2["Gzip"] = "cache.tgz";
       CacheFilename2["Zstd"] = "cache.tzst";
-    })(CacheFilename = exports2.CacheFilename || (exports2.CacheFilename = {}));
+    })(CacheFilename || (exports2.CacheFilename = CacheFilename = {}));
     var CompressionMethod;
     (function(CompressionMethod2) {
       CompressionMethod2["Gzip"] = "gzip";
       CompressionMethod2["ZstdWithoutLong"] = "zstd-without-long";
       CompressionMethod2["Zstd"] = "zstd";
-    })(CompressionMethod = exports2.CompressionMethod || (exports2.CompressionMethod = {}));
+    })(CompressionMethod || (exports2.CompressionMethod = CompressionMethod = {}));
     var ArchiveToolType;
     (function(ArchiveToolType2) {
       ArchiveToolType2["GNU"] = "gnu";
       ArchiveToolType2["BSD"] = "bsd";
-    })(ArchiveToolType = exports2.ArchiveToolType || (exports2.ArchiveToolType = {}));
+    })(ArchiveToolType || (exports2.ArchiveToolType = ArchiveToolType = {}));
     exports2.DefaultRetryAttempts = 2;
     exports2.DefaultRetryDelay = 5e3;
     exports2.SocketTimeout = 5e3;
@@ -40041,20 +40041,16 @@ var require_cacheUtils = __commonJS({
           implicitDescendants: false
         });
         try {
-          for (var _e = true, _f = __asyncValues2(globber.globGenerator()), _g; _g = yield _f.next(), _a = _g.done, !_a; ) {
+          for (var _e = true, _f = __asyncValues2(globber.globGenerator()), _g; _g = yield _f.next(), _a = _g.done, !_a; _e = true) {
             _c = _g.value;
             _e = false;
-            try {
-              const file = _c;
-              const relativeFile = path.relative(workspace, file).replace(new RegExp(`\\${path.sep}`, "g"), "/");
-              core.debug(`Matched: ${relativeFile}`);
-              if (relativeFile === "") {
-                paths.push(".");
-              } else {
-                paths.push(`${relativeFile}`);
-              }
-            } finally {
-              _e = true;
+            const file = _c;
+            const relativeFile = path.relative(workspace, file).replace(new RegExp(`\\${path.sep}`, "g"), "/");
+            core.debug(`Matched: ${relativeFile}`);
+            if (relativeFile === "") {
+              paths.push(".");
+            } else {
+              paths.push(`${relativeFile}`);
             }
           }
         } catch (e_1_1) {
@@ -84847,7 +84843,7 @@ var require_cacheHttpClient = __commonJS({
       return new http_client_1.HttpClient("actions/cache", [bearerCredentialHandler], getRequestOptions());
     }
     function getCacheVersion(paths, compressionMethod, enableCrossOsArchive = false) {
-      const components = paths;
+      const components = paths.slice();
       if (compressionMethod) {
         components.push(compressionMethod);
       }
@@ -85644,14 +85640,14 @@ var require_package = __commonJS({
         lint: "trunk check"
       },
       devDependencies: {
-        "@actions/cache": "^3.2.2",
+        "@actions/cache": "^3.2.3",
         "@actions/core": "^1.10.1",
         "@trunkio/launcher": "^1.2.7",
         "@tsconfig/node20": "^20.1.2",
         "@types/fs-extra": "^11.0.4",
         "@types/html-to-text": "^9.0.4",
         "@types/jest": "^29.5.11",
-        "@types/node": "^20.10.7",
+        "@types/node": "^20.11.0",
         "activitypub-starter-kit.rg-wood": "^1.0.0-rc4",
         esbuild: "^0.19.11",
         "html-to-text": "^9.0.5",
