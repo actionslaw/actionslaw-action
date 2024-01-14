@@ -4,7 +4,7 @@ export class Post implements Item {
   readonly uri: string;
   readonly message: string;
   readonly replyto?: string;
-  readonly downloads?: string[];
+  readonly media?: string[];
   readonly published: Date;
 
   constructor(
@@ -12,12 +12,12 @@ export class Post implements Item {
     message: string,
     published: Date,
     replyto?: string,
-    downloads?: string[],
+    media?: string[],
   ) {
     this.uri = uri;
     this.message = message;
     this.replyto = replyto;
-    this.downloads = downloads;
+    this.media = media;
     this.published = published;
   }
 

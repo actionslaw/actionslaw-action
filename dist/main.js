@@ -25692,13 +25692,13 @@ var require_Post = __commonJS({
       uri;
       message;
       replyto;
-      downloads;
+      media;
       published;
-      constructor(uri, message, published, replyto, downloads) {
+      constructor(uri, message, published, replyto, media) {
         this.uri = uri;
         this.message = message;
         this.replyto = replyto;
-        this.downloads = downloads;
+        this.media = media;
         this.published = published;
       }
       get key() {
@@ -85626,7 +85626,7 @@ var require_package = __commonJS({
   "lib/package.json"(exports2, module2) {
     module2.exports = {
       name: "actionslow-action",
-      version: "1.2.4",
+      version: "1.2.6",
       description: "Action to trigger Actionslaw workflows",
       main: "dist/main.js",
       author: "Ric Wood <ric@grislyeye.com>",
@@ -85734,8 +85734,8 @@ var require_ActionslawAction = __commonJS({
         const uncached = checks.map((check, i) => [check, allItems[i]]).filter(([cached, _]) => !cached).map(([_, item]) => item).sort(byPublishedTimestamp);
         if (config.cache) {
           uncached.forEach(async (item) => {
-            if (item.downloads)
-              await Media_1.Media.cache(item.key, item.downloads);
+            if (item.media)
+              await Media_1.Media.cache(item.key, item.media);
           });
         }
         core.info(`\u{1F52B} triggering [${uncached.map((item) => item.key)}]`);

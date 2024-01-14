@@ -52,7 +52,7 @@ export class ActionslawAction {
 
     if (config.cache) {
       uncached.forEach(async (item: Item) => {
-        if (item.downloads) await Media.cache(item.key, item.downloads);
+        if (item.media) await Media.cache(item.key, item.media);
       });
     }
 
