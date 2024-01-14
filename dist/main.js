@@ -85595,14 +85595,14 @@ var require_Media = __commonJS({
     var cache = __importStar2(require_cache2());
     var core = __importStar2(require_core());
     var Media = class _Media {
-      static folder = path.resolve(`./media`);
+      static folder = "./media";
       static async download(urls) {
         return Promise.all(urls.map((url) => new url_1.URL(url)).map(async (mediaUrl) => {
           const media = await fetch(mediaUrl);
           if (!fs.existsSync(_Media.folder))
             fs.mkdirSync(_Media.folder);
           const fileName = path.basename(mediaUrl.pathname);
-          const destination = path.resolve(_Media.folder, fileName);
+          const destination = path.resolve(`./${_Media.folder}`, fileName);
           const fileStream = fs.createWriteStream(destination, { flags: "w" });
           if (media.body) {
             await (0, promises_1.finished)(stream_1.Readable.fromWeb(media.body).pipe(fileStream));
@@ -85614,7 +85614,7 @@ var require_Media = __commonJS({
         if (urls.length > 0) {
           const files = await _Media.download(urls);
           core.info(`\u{1F52B} caching media ${files} for key ${key}`);
-          await cache.saveCache(files, key);
+          await cache.saveCache([`${_Media.folder}/**`], key);
         }
       }
     };
@@ -85627,7 +85627,7 @@ var require_package = __commonJS({
   "lib/package.json"(exports2, module2) {
     module2.exports = {
       name: "actionslow-action",
-      version: "1.2.6",
+      version: "1.2.7",
       description: "Action to trigger Actionslaw workflows",
       main: "dist/main.js",
       author: "Ric Wood <ric@grislyeye.com>",
