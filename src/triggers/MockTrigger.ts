@@ -1,5 +1,5 @@
-import { Item, Trigger } from "./Trigger";
-import { TriggerConfig } from "./TriggerConfig";
+import { Item, Trigger } from "../Trigger";
+import { TriggerConfig } from "../TriggerConfig";
 
 export interface MockConfig extends TriggerConfig {
   readonly repititions?: number;

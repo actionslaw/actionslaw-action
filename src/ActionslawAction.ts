@@ -1,8 +1,8 @@
 import * as core from "@actions/core";
-import { Key, Item } from "./triggers/Trigger";
+import { Key, Item } from "./Trigger";
 import { TriggerKey, Triggers } from "./triggers/Triggers";
 import { TriggerCache } from "./TriggerCache";
-import { TriggerConfig } from "./triggers/TriggerConfig";
+import { TriggerConfig } from "./TriggerConfig";
 import { Media } from "./Media";
 import project from "../package.json";
 

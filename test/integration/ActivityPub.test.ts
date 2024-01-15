@@ -2,8 +2,7 @@ import { describe, expect, test } from "@jest/globals";
 import * as crypto from "crypto";
 import { ActivityPubApp } from "activitypub-starter-kit.rg-wood";
 import { ActivityPubTestClient } from "./ActivityPubTestClient";
-import { ActivityPubTrigger } from "../../src/triggers/activitypub/ActivityPubTrigger";
-import { Post } from "../../src/triggers/activitypub/Post";
+import { ActivityPubTrigger, Post } from "../../src/triggers/ActivityPubTrigger";
 
 const app = ActivityPubApp.testApp();
 

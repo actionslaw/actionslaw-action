@@ -1,4 +1,4 @@
-import { Key } from "./triggers/Trigger";
+import { Key } from "./Trigger";
 import * as core from "@actions/core";
 import * as cache from "@actions/cache";
 import * as fs from "fs";
