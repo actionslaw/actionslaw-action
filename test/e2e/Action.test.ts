@@ -50,7 +50,7 @@ describe("Actionslaw action should", () => {
     const config = JSON.stringify({
       activitypub: {
         host: "toot.io",
-        user: "testgrislyeye",
+        id: "111561653515601604",
         cutoff: 1440,
       },
     });

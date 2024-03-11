@@ -1,11 +1,11 @@
 import { MockConfig, MockTrigger } from "./MockTrigger";
 import { RssConfig, RssTrigger } from "./RssTrigger";
-import { Trigger } from "./Trigger";
+import { Trigger } from "../Trigger";
 import {
   ActivityPubConfig,
   ActivityPubTrigger,
-} from "./activitypub/ActivityPubTrigger";
-import { TriggerConfig } from "./TriggerConfig";
+} from "./ActivityPubTrigger";
+import { TriggerConfig } from "../TriggerConfig";
 
 export type TriggerKey = string & { readonly "": unique symbol };
 

@@ -1,7 +1,7 @@
-import { Item, Key, Trigger } from "./Trigger";
+import { Item, Key, Trigger } from "../Trigger";
 import Parser from "rss-parser";
 import { createHash } from "crypto";
-import { TriggerConfig } from "./TriggerConfig";
+import { TriggerConfig } from "../TriggerConfig";
 
 export interface RssConfig extends TriggerConfig {
   readonly url?: string;

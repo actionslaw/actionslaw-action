@@ -56,7 +56,7 @@ Configured as follows:
 ```json
 {
   "activitypub": {
-    "user": "username",
+    "id": "account-id",
     "host": "example.com"
   }
 }
@@ -65,7 +65,7 @@ Configured as follows:
 #### Options
 
 - `host`, required, hostname of source ActivityPub instance
-- `user`, required, source user account
+- `id`, required, source Mastodon account ID ([Finding your account ID](https://rknight.me/blog/get-mastodon-account-id-from-username/))
 - `cutoff`, optional (default `30`), grace period in minutes before which posts are ignored
 - `removeTrailingHashtags`, optional (default `false`), remove trailing hashtags from source messages
 
