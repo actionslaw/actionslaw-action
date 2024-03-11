@@ -31,7 +31,7 @@ export class Post implements Item {
 }
 export interface ActivityPubConfig extends TriggerConfig {
   readonly host?: string;
-  readonly user?: string;
+  readonly id?: string;
   readonly cutoff?: number;
   readonly protocol?: string;
   readonly removeTrailingHashtags?: boolean;
@@ -79,9 +79,9 @@ export class ActivityPubTrigger implements Trigger {
   }
 
   async run(): Promise<Post[]> {
-    if (!this.config.host || !this.config.user) {
+    if (!this.config.host || !this.config.id) {
       throw new Error(
-        `Required config for user [${this.config.user}] or host [${this.config.host}] missing`,
+        `Required config for user [${this.config.id}] or host [${this.config.host}] missing`,
       );
     }
 
@@ -90,12 +90,12 @@ export class ActivityPubTrigger implements Trigger {
       : defaultProtocol;
 
     core.info(
-      `🔫 retrieving activitypub notes for @${this.config.user}@${this.config.host}`,
+      `🔫 retrieving activitypub notes for @${this.config.id}@${this.config.host}`,
     );
 
     const client = await generator("mastodon", `${protocol}://${this.config.host}`);
-    const account = await client.getAccount(this.config.user);
-    const statuses = await client.getAccountStatuses(account.data.id);
+    const account = await client.getAccount(this.config.id);
+    const statuses = await client.getAccountStatuses(this.config.id);
 
     const cutoffPeriod: number = this.config.cutoff
       ? this.config.cutoff

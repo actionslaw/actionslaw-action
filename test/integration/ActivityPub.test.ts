@@ -17,7 +17,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
     });
 
@@ -32,7 +32,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
     });
 
@@ -48,7 +48,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
     });
 
@@ -67,7 +67,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
     });
 
@@ -88,7 +88,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
     });
 
@@ -115,7 +115,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
     });
 
@@ -136,7 +136,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
     });
 
@@ -158,7 +158,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
       removeTrailingHashtags: true,
     });
@@ -182,7 +182,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
       removeTrailingHashtags: true,
     });
@@ -199,7 +199,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
     });
 
@@ -217,7 +217,7 @@ describe("ActivityPub should", () => {
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
-      user: app.account,
+      id: app.account,
       protocol: app.protocol,
     });
 
