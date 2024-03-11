@@ -29,15 +29,16 @@ export class Post implements Item {
     return this.uri as Key;
   }
 }
+
+type Minutes = number;
+
 export interface ActivityPubConfig extends TriggerConfig {
   readonly host?: string;
   readonly id?: string;
-  readonly cutoff?: number;
+  readonly cutoff?: Minutes;
   readonly protocol?: string;
   readonly removeTrailingHashtags?: boolean;
 }
-
-type Minutes = number;
 const defaultCutoff: Minutes = 30;
 const defaultProtocol = "https";
 
@@ -97,7 +98,7 @@ export class ActivityPubTrigger implements Trigger {
     const account = await client.getAccount(this.config.id);
     const statuses = await client.getAccountStatuses(this.config.id);
 
-    const cutoffPeriod: number = this.config.cutoff
+    const cutoffPeriod: Minutes = this.config.cutoff
       ? this.config.cutoff
       : defaultCutoff;
 
