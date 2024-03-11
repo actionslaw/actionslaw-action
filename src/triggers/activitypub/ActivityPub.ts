@@ -9,6 +9,12 @@ export class ActivityPub {
   private static mediaType = "application/activity+json";
   private static accept = { Accept: ActivityPub.mediaType };
 
+  private static errorHandler(json: any) {
+    if (json.error) {
+      throw new Error(json.error);
+    }
+  }
+
   static async forAccount(account: Account): Promise<Actor | undefined> {
     const self = account.links.filter((link) => link.rel == "self")[0];
     const uri = self!.href;
@@ -16,7 +22,11 @@ export class ActivityPub {
     if (uri) {
       const response = await ActivityPub.http.get(uri, ActivityPub.accept);
       const body = await response.readBody();
-      const outbox = JSON.parse(body) as { readonly outbox: string };
+      const json = JSON.parse(body);
+
+      ActivityPub.errorHandler(json);
+
+      const outbox = json as { readonly outbox: string };
       const user: Actor = {
         self: uri,
         outbox: outbox.outbox,
@@ -31,6 +41,10 @@ export class ActivityPub {
     const uri = `${actor.outbox}?page=true`;
     const response = await ActivityPub.http.get(uri, ActivityPub.accept);
     const body = await response.readBody();
-    return Outbox.fromJson(body);
+    const json = JSON.parse(body);
+
+    ActivityPub.errorHandler(json);
+
+    return Outbox.fromJson(json);
   }
 }

@@ -47,8 +47,8 @@ function toActivity(item: Item, replies: Activity[] = []): Activity {
   };
 }
 
-export function fromJson(json: string): Activity[] {
-  const outbox: Outbox = JSON.parse(json);
+export function fromJson(json: any): Activity[] {
+  const outbox: Outbox = json;
   return outbox.orderedItems.map((item) =>
     toActivity(item, findParentReplies(item, outbox)),
   );

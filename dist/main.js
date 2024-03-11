@@ -25732,7 +25732,7 @@ var require_Outbox = __commonJS({
       };
     }
     function fromJson(json) {
-      const outbox = JSON.parse(json);
+      const outbox = json;
       return outbox.orderedItems.map((item) => toActivity(item, findParentReplies(item, outbox)));
     }
     exports2.fromJson = fromJson;
@@ -28408,13 +28408,20 @@ var require_ActivityPub = __commonJS({
       static http = new HttpClient_1.HttpClient("@actionsflow/trigger-activitypub");
       static mediaType = "application/activity+json";
       static accept = { Accept: _ActivityPub.mediaType };
+      static errorHandler(json) {
+        if (json.error) {
+          throw new Error(json.error);
+        }
+      }
       static async forAccount(account) {
         const self2 = account.links.filter((link) => link.rel == "self")[0];
         const uri = self2.href;
         if (uri) {
           const response = await _ActivityPub.http.get(uri, _ActivityPub.accept);
           const body = await response.readBody();
-          const outbox = JSON.parse(body);
+          const json = JSON.parse(body);
+          _ActivityPub.errorHandler(json);
+          const outbox = json;
           const user = {
             self: uri,
             outbox: outbox.outbox
@@ -28427,7 +28434,9 @@ var require_ActivityPub = __commonJS({
         const uri = `${actor.outbox}?page=true`;
         const response = await _ActivityPub.http.get(uri, _ActivityPub.accept);
         const body = await response.readBody();
-        return Outbox.fromJson(body);
+        const json = JSON.parse(body);
+        _ActivityPub.errorHandler(json);
+        return Outbox.fromJson(json);
       }
     };
     exports2.ActivityPub = ActivityPub;
@@ -85628,7 +85637,7 @@ var require_package = __commonJS({
   "lib/package.json"(exports2, module2) {
     module2.exports = {
       name: "actionslow-action",
-      version: "1.2.8",
+      version: "1.3.0",
       description: "Action to trigger Actionslaw workflows",
       main: "dist/main.js",
       author: "Ric Wood <ric@grislyeye.com>",
