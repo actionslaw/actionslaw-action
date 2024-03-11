@@ -40141,7 +40141,10 @@ var require_cacheUtils = __commonJS({
     exports2.assertDefined = assertDefined;
     function isGhes() {
       const ghUrl = new URL(process.env["GITHUB_SERVER_URL"] || "https://github.com");
-      return ghUrl.hostname.toUpperCase() !== "GITHUB.COM";
+      const hostname = ghUrl.hostname.trimEnd().toUpperCase();
+      const isGitHubHost = hostname === "GITHUB.COM";
+      const isGheHost = hostname.endsWith(".GHE.COM") || hostname.endsWith(".GHE.LOCALHOST");
+      return !isGitHubHost && !isGheHost;
     }
     exports2.isGhes = isGhes;
   }
@@ -85653,24 +85656,23 @@ var require_package = __commonJS({
         lint: "trunk check"
       },
       devDependencies: {
-        "@actions/cache": "^3.2.3",
+        "@actions/cache": "^3.2.4",
         "@actions/core": "^1.10.1",
-        "@trunkio/launcher": "^1.2.7",
+        "@trunkio/launcher": "^1.3.0",
         "@tsconfig/node20": "^20.1.2",
         "@types/fs-extra": "^11.0.4",
         "@types/html-to-text": "^9.0.4",
-        "@types/jest": "^29.5.11",
-        "@types/node": "^20.11.0",
+        "@types/jest": "^29.5.12",
+        "@types/node": "^20.11.25",
         "activitypub-starter-kit.rg-wood": "^1.0.0-rc4",
-        esbuild: "^0.19.11",
+        esbuild: "^0.20.1",
         "html-to-text": "^9.0.5",
         jest: "^29.7.0",
-        megalodon: "^9.1.2",
         "resolve-cwd": "^3.0.0",
         rimraf: "^5.0.5",
         "rss-parser": "^3.13.0",
-        "ts-jest": "^29.1.1",
-        tsx: "^4.7.0",
+        "ts-jest": "^29.1.2",
+        tsx: "^4.7.1",
         "typed-rest-client": "^1.8.11"
       }
     };
