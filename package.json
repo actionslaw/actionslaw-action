@@ -24,7 +24,7 @@
     "@types/html-to-text": "^9.0.4",
     "@types/jest": "^29.5.12",
     "@types/node": "^20.11.25",
-    "activitypub-starter-kit.rg-wood": "^1.0.0-rc4",
+    "activitypub-starter-kit.rg-wood": "^1.0.0-rc5",
     "esbuild": "^0.20.1",
     "html-to-text": "^9.0.5",
     "jest": "^29.7.0",

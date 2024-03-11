@@ -2,7 +2,10 @@ import { describe, expect, test } from "@jest/globals";
 import * as crypto from "crypto";
 import { ActivityPubApp } from "activitypub-starter-kit.rg-wood";
 import { ActivityPubTestClient } from "./ActivityPubTestClient";
-import { ActivityPubTrigger, Post } from "../../src/triggers/ActivityPubTrigger";
+import {
+  ActivityPubTrigger,
+  Post,
+} from "../../src/triggers/ActivityPubTrigger";
 
 const app = ActivityPubApp.testApp();
 
@@ -55,7 +58,7 @@ describe("ActivityPub should", () => {
     const posts = await trigger.run();
 
     expect(
-      posts.find((p) => p.replyto === post.contents.object.inReplyTo),
+      posts.find((p) => p.replyto === post.contents.object.in_reply_to_id),
     ).toBeTruthy();
   });
 
@@ -94,7 +97,7 @@ describe("ActivityPub should", () => {
 
     const posts = await trigger.run();
 
-    expect(!posts.find((post) => post.message === uuid2)).toBeTruthy();
+    expect(posts.find((post) => post.message === uuid2)).toBeFalsy();
   });
 
   test("ignore ActivityPub reply to reply to indirect reply", async () => {

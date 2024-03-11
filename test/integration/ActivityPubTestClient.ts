@@ -3,7 +3,7 @@ interface TestObject {
     readonly id?: string;
     readonly type: string;
     readonly content: string;
-    readonly inReplyTo?: string;
+    readonly in_reply_to_id?: string;
     readonly attachment?: [{ readonly url: string }];
   };
 }
@@ -29,13 +29,13 @@ export class ActivityPubTestClient {
     options?: CreatPostOptions,
   ): Promise<TestPost> {
     function replyTo(reply: string, post: TestObject): TestObject {
-      const object = Object.assign(post.object, { inReplyTo: reply });
+      const object = Object.assign(post.object, { in_reply_to_id: reply });
       return { object: object };
     }
 
     function attachment(attachment: string, post: TestObject): TestObject {
       const object = Object.assign(post.object, {
-        attachment: [{ url: attachment }],
+        media_attachments: [{ url: attachment }],
       });
       return { object: object };
     }
