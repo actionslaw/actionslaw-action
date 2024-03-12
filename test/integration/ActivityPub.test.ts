@@ -16,7 +16,8 @@ const testClient = new ActivityPubTestClient(`${app.protocol}://${app.host}`);
 describe("ActivityPub should", () => {
   test("read ActivityPub posts", async () => {
     const uuid = crypto.randomUUID();
-    await testClient.createPost(`<p>${uuid}</p>`);
+    const expectedPost = await testClient.createPost(`<p>${uuid}</p>`);
+    const expectedKey = expectedPost.contents.object.id;
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
@@ -27,6 +28,7 @@ describe("ActivityPub should", () => {
     const posts = await trigger.run();
 
     expect(posts.find((post) => post.message === uuid)).toBeTruthy();
+    expect(posts.find((post) => post.key === expectedKey)).toBeTruthy();
   });
 
   test("read ActivityPub posts with URL", async () => {

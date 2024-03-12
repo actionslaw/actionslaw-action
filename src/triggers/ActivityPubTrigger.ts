@@ -142,7 +142,7 @@ export class ActivityPubTrigger implements Trigger {
       const media = status.media_attachments.map((status) => status.url);
 
       return new Post(
-        account.data.id,
+        status.id,
         filteredText,
         new Date(status.created_at),
         status.in_reply_to_id ? status.in_reply_to_id : undefined,
