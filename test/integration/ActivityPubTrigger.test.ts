@@ -13,7 +13,7 @@ app.start();
 
 const testClient = new ActivityPubTestClient(`${app.protocol}://${app.host}`);
 
-describe("ActivityPub should", () => {
+describe("ActivityPubTrigger should", () => {
   test("read ActivityPub posts", async () => {
     const uuid = crypto.randomUUID();
     const expectedPost = await testClient.createPost(`<p>${uuid}</p>`);
