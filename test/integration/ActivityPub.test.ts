@@ -230,6 +230,21 @@ describe("ActivityPub should", () => {
 
     expect(posts.find((p) => p.media!.includes(attachment))).toBeTruthy();
   });
+
+  test("ignore ActivityPub posts with not content", async () => {
+    const expectedPost = await testClient.createPost('');
+    const expectedId = expectedPost.contents.object.id
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      id: app.account,
+      protocol: app.protocol,
+    });
+
+    const posts = await trigger.run();
+
+    expect(posts.find((post) => post.key === expectedId)).toBeFalsy();
+  });
 });
 
 function byPublishedTimestamp(a: Post, b: Post) {

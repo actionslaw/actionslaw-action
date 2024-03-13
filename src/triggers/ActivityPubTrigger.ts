@@ -117,6 +117,7 @@ export class ActivityPubTrigger implements Trigger {
     cutoff.setMinutes(adjustment);
 
     const notes = statuses.data
+      .filter((status) => status.content)
       .filter((status) => new Date(status.created_at) > cutoff)
       .filter(directRepliesFor(account.data, statuses.data));
 
