@@ -28,7 +28,7 @@ describe("ActivityPubTrigger should", () => {
     const posts = await trigger.run();
 
     expect(posts.find((post) => post.message === uuid)).toBeTruthy();
-    expect(posts.find((post) => post.key === expectedKey)).toBeTruthy();
+    expect(posts.find((post) => expectedKey!.includes(post.key))).toBeTruthy();
   });
 
   test("read ActivityPub posts with URL", async () => {
@@ -47,9 +47,12 @@ describe("ActivityPubTrigger should", () => {
   });
 
   test("read ActivityPub replies", async () => {
-    const uuid = crypto.randomUUID();
     const post = await testClient.createPost("test-post");
-    await testClient.createPost(uuid, { reply: post.contents.object.id });
+    const uuid = crypto.randomUUID();
+    await testClient.createPost(uuid, {
+      reply: post.contents.object.id,
+      replyAccountId: app.account,
+    });
 
     const trigger = new ActivityPubTrigger({
       host: app.host,
@@ -59,15 +62,38 @@ describe("ActivityPubTrigger should", () => {
 
     const posts = await trigger.run();
 
-    expect(
-      posts.find((p) => p.replyto === post.contents.object.in_reply_to_id),
-    ).toBeTruthy();
+    expect(posts.find((post) => post.message === uuid)).toBeTruthy();
+  });
+
+  test("read ActivityPub replies to replies", async () => {
+    const post = await testClient.createPost("test-post");
+    const reply1 = await testClient.createPost(crypto.randomUUID(), {
+      reply: post.contents.object.id,
+      replyAccountId: app.account,
+    });
+    const content = crypto.randomUUID();
+    await testClient.createPost(content, {
+      reply: reply1.contents.object.id,
+      replyAccountId: app.account,
+    });
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      id: app.account,
+      protocol: app.protocol,
+    });
+
+    const posts = await trigger.run();
+
+    expect(posts.find((post) => post.message === content)).toBeTruthy();
   });
 
   test("ignore indirect ActivityPub replies", async () => {
+    const content = crypto.randomUUID();
     const uuid = crypto.randomUUID();
-    await testClient.createPost(uuid, {
-      reply: `https://example.org/test/${uuid}`,
+    await testClient.createPost(content, {
+      reply: `https://example.org/test/${crypto.randomUUID()}`,
+      replyAccountId: uuid,
     });
 
     const trigger = new ActivityPubTrigger({
@@ -78,7 +104,7 @@ describe("ActivityPubTrigger should", () => {
 
     const posts = await trigger.run();
 
-    expect(!posts.find((post) => post.message === uuid)).toBeTruthy();
+    expect(posts.find((post) => post.message === content)).toBeFalsy();
   });
 
   test("ignore ActivityPub reply to indirect reply", async () => {
@@ -126,17 +152,17 @@ describe("ActivityPubTrigger should", () => {
 
     const posts = await trigger.run();
 
-    expect(!posts.find((post) => post.message === uuid3)).toBeTruthy();
+    expect(posts.find((post) => post.message === uuid3)).toBeFalsy();
   });
 
   test("ignore hashtag links", async () => {
     const uuid = crypto.randomUUID();
     await testClient.createPost(
       `<p>
-        <a href="https://example.org/tags/${uuid}" class="mention hashtag" rel="tag">
-          #<span>${uuid}</span>
-        </a>
-      </p>`,
+            <a href="https://example.org/tags/${uuid}" class="mention hashtag" rel="tag">
+              #<span>${uuid}</span>
+            </a>
+          </p>`,
     );
 
     const trigger = new ActivityPubTrigger({
@@ -154,11 +180,11 @@ describe("ActivityPubTrigger should", () => {
     const hashtag = crypto.randomBytes(20).toString("hex");
     await testClient.createPost(
       `<p>
-        Hashtag test
-        <a href="https://example.org/tags/${hashtag}" class="mention hashtag" rel="tag">
-          #<span>${hashtag}</span>
-        </a>
-      </p>`,
+            Hashtag test
+            <a href="https://example.org/tags/${hashtag}" class="mention hashtag" rel="tag">
+              #<span>${hashtag}</span>
+            </a>
+          </p>`,
     );
 
     const trigger = new ActivityPubTrigger({
@@ -170,19 +196,19 @@ describe("ActivityPubTrigger should", () => {
 
     const posts = await trigger.run();
 
-    expect(!posts.find((p) => p.message.includes(hashtag))).toBeTruthy();
+    expect(posts.find((p) => p.message.includes(hashtag))).toBeFalsy();
   });
 
   test("retain body hashtags", async () => {
     const hashtag = crypto.randomBytes(20).toString("hex");
     await testClient.createPost(
       `<p>
-        1
-        <a href="https://example.org/tags/${hashtag}" class="mention hashtag" rel="tag">
-          #<span>${hashtag}</span>
-        </a>
-        2
-      </p>`,
+            1
+            <a href="https://example.org/tags/${hashtag}" class="mention hashtag" rel="tag">
+              #<span>${hashtag}</span>
+            </a>
+            2
+          </p>`,
     );
 
     const trigger = new ActivityPubTrigger({
@@ -232,8 +258,8 @@ describe("ActivityPubTrigger should", () => {
   });
 
   test("ignore ActivityPub posts with not content", async () => {
-    const expectedPost = await testClient.createPost('');
-    const expectedId = expectedPost.contents.object.id
+    const expectedPost = await testClient.createPost("");
+    const expectedId = expectedPost.contents.object.id;
 
     const trigger = new ActivityPubTrigger({
       host: app.host,

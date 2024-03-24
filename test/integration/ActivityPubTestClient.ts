@@ -14,6 +14,7 @@ interface TestPost {
 
 interface CreatePostOptions {
   readonly reply?: string;
+  readonly replyAccountId?: string;
   readonly attachment?: string;
 }
 
@@ -29,7 +30,11 @@ export class ActivityPubTestClient {
     options?: CreatePostOptions,
   ): Promise<TestPost> {
     function replyTo(reply: string, post: TestObject): TestObject {
-      const object = Object.assign(post.object, { in_reply_to_id: reply });
+      const object = Object.assign(post.object, {
+        in_reply_to_id: reply,
+        in_reply_to_account_id: options ? options.replyAccountId : undefined,
+      });
+
       return { object: object };
     }
 

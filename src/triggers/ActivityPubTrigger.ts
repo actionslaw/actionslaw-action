@@ -31,7 +31,6 @@ export class Post implements Item {
 }
 
 type Status = Entity.Status;
-type Account = Entity.Account;
 
 type Minutes = number;
 
@@ -65,17 +64,33 @@ function findParentReplies(
 
 type StatusFilter = (status: Status) => boolean;
 
-function directRepliesFor(account: Account, outbox: Status[]): StatusFilter {
+function directRepliesFor(accountId: string, outbox: Status[]): StatusFilter {
   return (status: Status) => {
     const reply = status.in_reply_to_id;
-    const isAccountOwnerReply = reply ? reply.startsWith(account.id) : false;
+    if (!reply) return true;
 
-    const isIndirectReply = findParentReplies(status, outbox).some(
-      (reply) =>
-        reply.in_reply_to_id && !reply.in_reply_to_id.startsWith(account.id),
+    const isAccountOwnerReply = status.in_reply_to_account_id === accountId;
+
+    core.debug(
+      `🔫 reply=${status.id} from account ${status.account.id} owned=${isAccountOwnerReply}`,
     );
 
-    return !reply || (isAccountOwnerReply && !isIndirectReply);
+    const parentReplies = findParentReplies(status, outbox);
+
+    const isIndirectReply = parentReplies.some(
+      (reply) =>
+        reply.in_reply_to_id && reply.in_reply_to_account_id !== accountId,
+    );
+
+    core.debug(
+      `🔫 reply=${reply} from account ${status.account.id} indirect=${isIndirectReply}`,
+    );
+
+    const include = isAccountOwnerReply && !isIndirectReply;
+
+    core.debug(`🔫 discarding=${!include} ${status.id} (reply to ${reply})`);
+
+    return include;
   };
 }
 
@@ -105,7 +120,7 @@ export class ActivityPubTrigger implements Trigger {
       "mastodon",
       `${protocol}://${this.config.host}`,
     );
-    const account = await client.getAccount(this.config.id);
+
     const statuses = await client.getAccountStatuses(this.config.id);
 
     const cutoffPeriod: Minutes = this.config.cutoff
@@ -119,7 +134,7 @@ export class ActivityPubTrigger implements Trigger {
     const notes = statuses.data
       .filter((status) => status.content)
       .filter((status) => new Date(status.created_at) > cutoff)
-      .filter(directRepliesFor(account.data, statuses.data));
+      .filter(directRepliesFor(this.config.id, statuses.data));
 
     const posts = notes!.map(async (status) => {
       const text = htmlToText(status.content, {
