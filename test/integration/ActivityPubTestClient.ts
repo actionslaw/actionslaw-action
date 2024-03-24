@@ -12,7 +12,7 @@ interface TestPost {
   readonly contents: TestObject;
 }
 
-interface CreatPostOptions {
+interface CreatePostOptions {
   readonly reply?: string;
   readonly attachment?: string;
 }
@@ -26,7 +26,7 @@ export class ActivityPubTestClient {
 
   async createPost(
     message: string,
-    options?: CreatPostOptions,
+    options?: CreatePostOptions,
   ): Promise<TestPost> {
     function replyTo(reply: string, post: TestObject): TestObject {
       const object = Object.assign(post.object, { in_reply_to_id: reply });
