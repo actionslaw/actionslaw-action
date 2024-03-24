@@ -223,7 +223,7 @@ describe("ActivityPubTrigger should", () => {
     expect(posts.find((p) => p.message === `1 #${hashtag} 2`)).toBeTruthy();
   });
 
-  test("output trailing hashtags", async () => {
+  test("output trailing hashtag", async () => {
     const hashtag = crypto.randomBytes(20).toString("hex");
     await testClient.createPost(
       `<p>
@@ -244,6 +244,38 @@ describe("ActivityPubTrigger should", () => {
     const posts = await trigger.run();
 
     expect(posts.find((p) => p.tags.includes(`#${hashtag}`))).toBeTruthy();
+  });
+
+  test("output trailing hashtags", async () => {
+    const hashtag1 = crypto.randomBytes(20).toString("hex");
+    const hashtag2 = crypto.randomBytes(20).toString("hex");
+    await testClient.createPost(
+      `<p>
+            Hashtag test
+            <a href="https://example.org/tags/${hashtag1}" class="mention hashtag" rel="tag">
+              #<span>${hashtag1}</span>
+            </a>
+            <a href="https://example.org/tags/${hashtag2}" class="mention hashtag" rel="tag">
+              #<span>${hashtag2}</span>
+            </a>
+          </p>`,
+    );
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      id: app.account,
+      protocol: app.protocol,
+      removeTrailingHashtags: true,
+    });
+
+    const posts = await trigger.run();
+
+    expect(
+      posts.find(
+        (p) =>
+          p.tags.includes(`#${hashtag1}`) && p.tags.includes(`#${hashtag2}`),
+      ),
+    ).toBeTruthy();
   });
 
   test("returns posts in order of published timestamp ascending", async () => {

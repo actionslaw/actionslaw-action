@@ -167,7 +167,9 @@ export class ActivityPubTrigger implements Trigger {
         status.in_reply_to_id ? status.in_reply_to_id : undefined,
         media,
         trailingHashtags
-          ? Array.from(trailingHashtags).map((tag) => tag.trim())
+          ? Array.from(trailingHashtags)
+              .map((tag) => tag.trim().split(/\s+/))
+              .flat()
           : [],
       );
     });
