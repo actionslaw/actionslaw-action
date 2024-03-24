@@ -1,5 +1,5 @@
 {
-  "name": "actionslow-action",
+  "name": "actionslaw-action",
   "version": "2.0.4",
   "description": "Action to trigger Actionslaw workflows",
   "main": "dist/main.js",
