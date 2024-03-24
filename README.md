@@ -80,7 +80,8 @@ An outputs example:
   "uri": "uniqueId",
   "message": "hello world title",
   "replyto": "optionalUniqueReplyId",
-  "media": "optionalMediaCacheKey"
+  "media": "optionalMediaCacheKey",
+  "tags": ["#hashtag1", "#hashtag2"]
 }
 ```
 

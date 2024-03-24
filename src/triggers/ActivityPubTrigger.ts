@@ -10,6 +10,7 @@ export class Post implements Item {
   readonly replyto?: string;
   readonly media?: string[];
   readonly published: Date;
+  readonly tags: string[];
 
   constructor(
     uri: string,
@@ -17,12 +18,14 @@ export class Post implements Item {
     published: Date,
     replyto?: string,
     media?: string[],
+    tags?: string[] | undefined,
   ) {
     this.uri = uri;
     this.message = message;
     this.replyto = replyto;
     this.media = media;
     this.published = published;
+    this.tags = tags ? tags : [];
   }
 
   get key(): Key {
@@ -148,8 +151,8 @@ export class ActivityPubTrigger implements Trigger {
         },
       });
 
-      const stripHashTags = (t: string) =>
-        t.replaceAll(/(?:\s*[#$][a-z\d-]+)+$/gi, "");
+      const trailingHashtags = hashtagsMatcher.exec(text);
+      const stripHashTags = (t: string) => t.replaceAll(hashtagsMatcher, "");
 
       const filteredText = this.config.removeTrailingHashtags
         ? stripHashTags(text)
@@ -163,9 +166,14 @@ export class ActivityPubTrigger implements Trigger {
         new Date(status.created_at),
         status.in_reply_to_id ? status.in_reply_to_id : undefined,
         media,
+        trailingHashtags
+          ? Array.from(trailingHashtags).map((tag) => tag.trim())
+          : [],
       );
     });
 
     return Promise.all(posts);
   }
 }
+
+const hashtagsMatcher = /(?:\s*[#$][a-z\d-]+)+$/gi;

@@ -223,6 +223,29 @@ describe("ActivityPubTrigger should", () => {
     expect(posts.find((p) => p.message === `1 #${hashtag} 2`)).toBeTruthy();
   });
 
+  test("output trailing hashtags", async () => {
+    const hashtag = crypto.randomBytes(20).toString("hex");
+    await testClient.createPost(
+      `<p>
+            Hashtag test
+            <a href="https://example.org/tags/${hashtag}" class="mention hashtag" rel="tag">
+              #<span>${hashtag}</span>
+            </a>
+          </p>`,
+    );
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      id: app.account,
+      protocol: app.protocol,
+      removeTrailingHashtags: true,
+    });
+
+    const posts = await trigger.run();
+
+    expect(posts.find((p) => p.tags.includes(`#${hashtag}`))).toBeTruthy();
+  });
+
   test("returns posts in order of published timestamp ascending", async () => {
     await testClient.createPost(`Post 1`);
     await testClient.createPost(`Post 2`);
