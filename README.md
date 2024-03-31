@@ -81,7 +81,7 @@ An outputs example:
   "message": "hello world title",
   "replyto": "optionalUniqueReplyId",
   "media": "optionalMediaCacheKey",
-  "tags": ["#hashtag1", "#hashtag2"]
+  "tags": "[\"#hashtag1\", \"#hashtag2\"]"
 }
 ```
 

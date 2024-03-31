@@ -254,7 +254,7 @@ describe("ActivityPubTrigger should", () => {
 
     const posts = await trigger.run();
 
-    expect(posts.find((p) => p.tags.includes(`#${hashtag}`))).toBeTruthy();
+    expect(posts.find((p) => p.tags === `["#${hashtag}"]`)).toBeTruthy();
   });
 
   test("output trailing hashtags", async () => {
@@ -283,10 +283,7 @@ describe("ActivityPubTrigger should", () => {
     const posts = await trigger.run();
 
     expect(
-      posts.find(
-        (p) =>
-          p.tags.includes(`#${hashtag1}`) && p.tags.includes(`#${hashtag2}`),
-      ),
+      posts.find((p) => p.tags === `["#${hashtag1}","#${hashtag2}"]`),
     ).toBeTruthy();
   });
 

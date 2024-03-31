@@ -10,7 +10,7 @@ export class Post implements Item {
   readonly replyto?: string;
   readonly media?: string[];
   readonly published: Date;
-  readonly tags: string[];
+  readonly tags: string;
 
   constructor(
     uri: string,
@@ -25,7 +25,7 @@ export class Post implements Item {
     this.replyto = replyto;
     this.media = media;
     this.published = published;
-    this.tags = tags ? tags : [];
+    this.tags = tags ? JSON.stringify(tags) : "";
   }
 
   get key(): Key {
