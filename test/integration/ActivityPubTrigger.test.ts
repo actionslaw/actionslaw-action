@@ -23,6 +23,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -39,6 +40,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -58,6 +60,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -81,6 +84,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -100,6 +104,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -121,6 +126,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -148,6 +154,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -169,6 +176,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -192,6 +200,7 @@ describe("ActivityPubTrigger should", () => {
       id: app.account,
       protocol: app.protocol,
       removeTrailingHashtags: true,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -216,6 +225,7 @@ describe("ActivityPubTrigger should", () => {
       id: app.account,
       protocol: app.protocol,
       removeTrailingHashtags: true,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -239,6 +249,7 @@ describe("ActivityPubTrigger should", () => {
       id: app.account,
       protocol: app.protocol,
       removeTrailingHashtags: true,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -266,6 +277,7 @@ describe("ActivityPubTrigger should", () => {
       id: app.account,
       protocol: app.protocol,
       removeTrailingHashtags: true,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -287,6 +299,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -305,6 +318,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
@@ -320,6 +334,7 @@ describe("ActivityPubTrigger should", () => {
       host: app.host,
       id: app.account,
       protocol: app.protocol,
+      cutoff: 120,
     });
 
     const posts = await trigger.run();
