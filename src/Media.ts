@@ -9,17 +9,18 @@ import * as core from "@actions/core";
 export class Media {
   static folder: string = "./media";
 
-  private static async download(urls: string[]): Promise<string[]> {
+  private static async download(key: string, urls: string[]): Promise<string[]> {
     return Promise.all(
       urls
         .map((url) => new URL(url))
         .map(async (mediaUrl) => {
           const media = await fetch(mediaUrl);
+          const folder = `./${Media.folder}/${key}`
 
-          if (!fs.existsSync(Media.folder)) fs.mkdirSync(Media.folder);
+          if (!fs.existsSync(folder)) fs.mkdirSync(folder);
 
           const fileName = path.basename(mediaUrl.pathname);
-          const destination = path.resolve(`./${Media.folder}`, fileName);
+          const destination = path.resolve(folder, fileName);
           const fileStream = fs.createWriteStream(destination, { flags: "w" });
 
           if (media.body) {
@@ -33,7 +34,7 @@ export class Media {
 
   static async cache(key: string, urls: string[]): Promise<void> {
     if (urls.length > 0) {
-      const files = await Media.download(urls);
+      const files = await Media.download(key, urls);
 
       core.info(`🔫 caching media ${files} for key ${key}`);
 
