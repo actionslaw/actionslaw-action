@@ -6,6 +6,7 @@ import {
   ActivityPubTrigger,
   Post,
 } from "../../src/triggers/ActivityPubTrigger";
+import { Attachment } from "../../src/Trigger";
 
 const app = ActivityPubApp.testApp();
 
@@ -306,7 +307,11 @@ describe("ActivityPubTrigger should", () => {
 
   test("downloads attachments", async () => {
     const uuid = crypto.randomUUID();
-    const attachment = `http://localhost:8080/${uuid}.txt`;
+    const attachment: Attachment = {
+      url: `http://localhost:8080/${uuid}.txt`,
+      alt: null,
+    };
+
     await testClient.createPost(uuid, {
       attachment: attachment,
     });
@@ -320,7 +325,32 @@ describe("ActivityPubTrigger should", () => {
 
     const posts = await trigger.run();
 
-    expect(posts.find((p) => p.media!.includes(attachment))).toBeTruthy();
+    const media = posts.find((p) => p.message === uuid)!.media;
+    expect(media!.map((m) => m.url).includes(attachment.url)).toBeTruthy();
+  });
+
+  test("downloads attachments with alt text", async () => {
+    const uuid = crypto.randomUUID();
+    const attachment: Attachment = {
+      url: `http://localhost:8080/${uuid}.txt`,
+      alt: uuid,
+    };
+
+    await testClient.createPost(uuid, {
+      attachment: attachment,
+    });
+
+    const trigger = new ActivityPubTrigger({
+      host: app.host,
+      id: app.account,
+      protocol: app.protocol,
+      cutoff: 120,
+    });
+
+    const posts = await trigger.run();
+
+    const media = posts.find((p) => p.message === uuid)!.media;
+    expect(media!.map((m) => m.alt).includes(uuid)).toBeTruthy();
   });
 
   test("ignore ActivityPub posts with not content", async () => {

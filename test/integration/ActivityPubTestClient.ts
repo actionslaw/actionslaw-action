@@ -1,3 +1,5 @@
+import { Attachment } from "../../src/Trigger";
+
 interface TestObject {
   object: {
     readonly id?: string;
@@ -15,7 +17,7 @@ interface TestPost {
 interface CreatePostOptions {
   readonly reply?: string;
   readonly replyAccountId?: string;
-  readonly attachment?: string;
+  readonly attachment?: Attachment;
 }
 
 export class ActivityPubTestClient {
@@ -38,9 +40,11 @@ export class ActivityPubTestClient {
       return { object: object };
     }
 
-    function attachment(attachment: string, post: TestObject): TestObject {
+    function attachment(attachment: Attachment, post: TestObject): TestObject {
       const object = Object.assign(post.object, {
-        media_attachments: [{ url: attachment }],
+        media_attachments: [
+          { url: attachment.url, description: attachment.alt },
+        ],
       });
       return { object: object };
     }

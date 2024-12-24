@@ -5,36 +5,43 @@ import * as path from "path";
 import { URL } from "url";
 import * as cache from "@actions/cache";
 import * as core from "@actions/core";
+import { Attachment } from "./Trigger";
 
 export class Media {
   static folder: string = "./media";
 
-  private static async download(key: string, urls: string[]): Promise<string[]> {
+  private static async download(
+    key: string,
+    attachments: Attachment[],
+  ): Promise<string[]> {
     return Promise.all(
-      urls
-        .map((url) => new URL(url))
-        .map(async (mediaUrl) => {
-          const media = await fetch(mediaUrl);
-          const folder = `./${Media.folder}/${key}`
+      attachments.map(async (attachment) => {
+        const mediaUrl = new URL(attachment.url);
+        const media = await fetch(mediaUrl);
+        const folder = `${Media.folder}/${key}`;
 
-          if (!fs.existsSync(folder)) fs.mkdirSync(folder);
+        if (!fs.existsSync(folder)) fs.mkdirSync(folder, { recursive: true });
 
-          const fileName = path.basename(mediaUrl.pathname);
-          const destination = path.resolve(folder, fileName);
-          const fileStream = fs.createWriteStream(destination, { flags: "w" });
+        const fileName = path.basename(mediaUrl.pathname);
+        const mediaFile = path.resolve(folder, fileName);
+        const fileStream = fs.createWriteStream(mediaFile, { flags: "w" });
 
-          if (media.body) {
-            await finished(Readable.fromWeb(media.body).pipe(fileStream));
-          }
+        if (media.body) {
+          await finished(Readable.fromWeb(media.body).pipe(fileStream));
+        }
 
-          return destination;
-        }),
+        if (media.body && attachment.alt) {
+          fs.writeFileSync(`${mediaFile}.txt`, attachment.alt);
+        }
+
+        return mediaFile;
+      }),
     );
   }
 
-  static async cache(key: string, urls: string[]): Promise<void> {
-    if (urls.length > 0) {
-      const files = await Media.download(key, urls);
+  static async cache(key: string, attachments: Attachment[]): Promise<void> {
+    if (attachments.length > 0) {
+      const files = await Media.download(key, attachments);
 
       core.info(`🔫 caching media ${files} for key ${key}`);
 

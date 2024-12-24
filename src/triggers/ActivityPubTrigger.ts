@@ -1,4 +1,4 @@
-import { Item, Key, Trigger } from "../Trigger";
+import { Attachment, Item, Key, Trigger } from "../Trigger";
 import { TriggerConfig } from "../TriggerConfig";
 import generator, { Entity } from "megalodon";
 import { htmlToText } from "html-to-text";
@@ -8,7 +8,7 @@ export class Post implements Item {
   readonly uri: string;
   readonly message: string;
   readonly replyto?: string;
-  readonly media?: string[];
+  readonly media?: Attachment[];
   readonly published: Date;
   readonly tags: string;
 
@@ -17,7 +17,7 @@ export class Post implements Item {
     message: string,
     published: Date,
     replyto?: string,
-    media?: string[],
+    media?: Attachment[],
     tags?: string[] | undefined,
   ) {
     this.uri = uri;
@@ -158,7 +158,12 @@ export class ActivityPubTrigger implements Trigger {
         ? stripHashTags(text)
         : text;
 
-      const media = status.media_attachments.map((status) => status.url);
+      const media: Attachment[] = status.media_attachments.map((status) => {
+        return {
+          url: status.url,
+          alt: status.description,
+        };
+      });
 
       return new Post(
         status.id,
