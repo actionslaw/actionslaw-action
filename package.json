@@ -25,7 +25,7 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.2",
     "activitypub-starter-kit.rg-wood": "^1.0.0-rc7",
-    "esbuild": "^0.24.2",
+    "esbuild": "^0.25.0",
     "html-to-text": "^9.0.5",
     "jest": "^29.7.0",
     "megalodon": "^10.0.7",
